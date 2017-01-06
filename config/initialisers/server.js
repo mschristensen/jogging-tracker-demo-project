@@ -35,8 +35,8 @@ var server =  function() {
       next(err);
     });
 
-    app.listen(config.get('NODE_PORT'));
-    logger.info('[SERVER] Listening on port ' + config.get('NODE_PORT'));
+    app.listen(config.get('PORT'));
+    logger.info('[SERVER] Listening on port ' + config.get('PORT'));
 
     return resolve();
   });
