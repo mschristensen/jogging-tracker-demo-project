@@ -12,6 +12,10 @@ var server =  function() {
   return new Promise(function(resolve, reject) {
     app = express();
 
+    // Security
+    var helmet = require('helmet')
+    app.use(helmet())
+
     app.use(morgan('common'));
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json({ type: '*/*' }));
