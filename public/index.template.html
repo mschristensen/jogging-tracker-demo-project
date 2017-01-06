@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/" />
+    <!-- @if ENV='production' -->
+    <title>Production | Angular App</title>
+    <!-- @endif -->
+    <!-- @if ENV='development' -->
+    <title>Development | Angular App</title>
+    <!-- @endif -->
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- FAVICON -->
+    <link rel="shortcut icon" href="favicon.ico" />
+    <!-- Browser bar colours on mobile -->
+    <meta name="theme-color" content="#ffffff" />
+    <!-- App styles -->
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body ng-app="myApp" ng-controller="rootController">
+    <!-- @if ENV='development' -->
+    <h1>Development Mode</h1>
+    <!-- @endif -->
+    <!-- @if ENV='production' -->
+    <h2>Production Mode</h2>
+    <!-- @endif -->
+    <h1>{{ app_test }}</h1>
+    <test-directive></test-directive>
+
+    <!-- DEPENDENCIES -->
+    <script src="dependencies.js"></script>
+
+    <!-- ROOT -->
+    <!-- @if ENV='development' -->
+    <script src="app/app.js"></script>
+    <script src="app/components/test/test.controller.js"></script>
+    <script src="app/components/test/test.directive.js"></script>
+    <!-- @endif -->
+    <!-- @if ENV='production' -->
+    <script src="bundle.min.js"></script>
+    <!-- @endif -->
+  </body>
+</html>

@@ -1,5 +1,4 @@
 var express = require('express');
-var path = require('path');
 var config = require('nconf');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
@@ -24,7 +23,7 @@ var server =  function() {
     require('../../app/routes/index')(app);
 
     // Serve up the web app
-    app.use(express.static(path.join(__dirname, 'public')));
+    app.use('/', express.static(__dirname + '/../../public'));
 
     // Error handler
     app.use(function(err, req, res, next) {

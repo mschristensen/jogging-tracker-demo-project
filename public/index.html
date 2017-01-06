@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/" />
+    <title>Development | Angular App</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- FAVICON -->
+    <link rel="shortcut icon" href="favicon.ico" />
+    <!-- Browser bar colours on mobile -->
+    <meta name="theme-color" content="#ffffff" />
+    <!-- App styles -->
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body ng-app="myApp" ng-controller="rootController">
+    <h1>Development Mode</h1>
+    <h1>{{ app_test }}</h1>
+    <test-directive></test-directive>
+
+    <!-- DEPENDENCIES -->
+    <script src="dependencies.js"></script>
+
+    <!-- ROOT -->
+    <script src="app/app.js"></script>
+    <script src="app/components/test/test.controller.js"></script>
+    <script src="app/components/test/test.directive.js"></script>
+  </body>
+</html>

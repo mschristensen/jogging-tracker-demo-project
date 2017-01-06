@@ -20,10 +20,8 @@ require('./config/environments/' + nconf.get('NODE_ENV'));
 logger.info('[APP] Starting server initialization');
 
 // Start the server
-database().then(server).catch(function(err) {
-  if (err) {
-    logger.error('[APP] initialization failed', err);
-  } else {
-    logger.info('[APP] initialized SUCCESSFULLY');
-  }
+database().then(server).then(function() {
+  logger.info('[APP] initialized SUCCESSFULLY');
+}).catch(function(err) {
+  logger.error('[APP] initialization failed', err);
 });
