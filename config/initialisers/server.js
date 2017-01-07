@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var config = require('nconf');
 var bodyParser = require('body-parser');
@@ -5,9 +7,7 @@ var morgan = require('morgan');
 var logger = require('winston');
 var app;
 
-var server =  function() {
-  'use strict';
-
+module.exports = function() {
   return new Promise(function(resolve, reject) {
     app = express();
 
@@ -41,5 +41,3 @@ var server =  function() {
     return resolve();
   });
 };
-
-module.exports = server;

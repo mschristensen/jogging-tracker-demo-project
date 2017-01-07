@@ -1,7 +1,18 @@
+'use strict';
+
+var mongoose = require('mongoose');
+var logger = require('winston');
+
 module.exports = function() {
-  'use strict';
   return new Promise(function(resolve, reject) {
-    // Initialise here
-    resolve();
+
+    mongoose.connect(process.env.MONGOLAB_URI, function(err) {
+      if(err) {
+        logger.error('[DATABASE] Unable to connect to database:', err);
+        return reject();
+      }
+      logger.info('[DATABASE] Connected to database');
+      resolve();
+    });
   });
 };
