@@ -38,6 +38,6 @@ module.exports = function() {
     app.listen(config.get('PORT'));
     logger.info('[SERVER] Listening on port ' + config.get('PORT'));
 
-    return resolve();
+    return resolve(app);
   });
 };
