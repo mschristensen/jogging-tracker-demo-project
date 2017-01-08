@@ -5,6 +5,7 @@ const config = require('nconf');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const logger = require('winston');
+const passport = require('passport');
 let app;
 
 module.exports = function() {
@@ -18,6 +19,8 @@ module.exports = function() {
     app.use(morgan('common'));
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json({ type: '*/*' }));
+    app.use(passport.initialize());
+    require('./passport.js')(passport);
 
     logger.info('[SERVER] Initializing routes');
     require('../../app/routes/index')(app);
