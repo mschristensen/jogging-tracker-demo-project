@@ -12,6 +12,7 @@ module.exports = function(router) {
   router.route('/')
     .get(authenticate, function(req, res, next) {
       User.find({}, function(err, users) {
+        console.log(users);
         return Response.OK(users).send(res);
       });
     })
@@ -64,21 +65,15 @@ module.exports = function(router) {
         email: req.body.email
       }, function(err, user) {
         if (err) throw err;
+        if (!user) return Response.NotFound().send(res);
 
-        if (!user) {
-          return Response.NotFound().send(res);
-        } else {
-          user.comparePassword(req.body.password, function(err, isMatch) {
-            if (isMatch && !err) {
-              let token = jwt.sign(user, process.env.SECRET, {
-                expiresIn: 86400  // 24 hours
-              });
-              return Response.OK({ token: 'JWT ' + token }).send(res);
-            } else {
-              return Response.Forbidden().send(res);
-            }
+        user.comparePassword(req.body.password, function(err, isMatch) {
+          if(!isMatch || err) return Response.Forbidden().send(res);
+          let token = jwt.sign(user, process.env.SECRET, {
+            expiresIn: 86400  // 24 hours
           });
-        }
+          return Response.OK({ token: 'JWT ' + token }).send(res);
+        });
       });
     });
 };

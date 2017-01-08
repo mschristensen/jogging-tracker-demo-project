@@ -7,6 +7,6 @@ module.exports = function(req, res, next) {
   passport.authenticate('jwt', function(err, user, info) {
     if(err) { return next(err); }
     if(!user) { return Response.Forbidden().send(res); }
-    return Response.OK().send(res);
+    return next();
   })(req, res, next);
 };
