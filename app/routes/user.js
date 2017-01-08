@@ -10,7 +10,11 @@ const UserController = require('../controllers/user.js');
 
 module.exports = function(router) {
   router.route('/')
-    .get(authenticate, function(req, res, next) {
+    .get(function(req, res, next) {
+      return authenticate({
+        allowedRoles: ['User']
+      }, req, res, next);
+    }, function(req, res, next) {
       User.find({}, function(err, users) {
         return Response.OK(users).send(res);
       });
