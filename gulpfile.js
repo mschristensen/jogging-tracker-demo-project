@@ -13,6 +13,8 @@ var concat = require('gulp-concat');
 var less = require('gulp-less');
 var uglify = require('gulp-uglify');
 var uglifycss = require('gulp-uglifycss');
+var mocha = require('gulp-mocha');
+var wait = require('gulp-wait');
 
 var environment = args.env || process.env.NODE_ENV;
 
@@ -89,5 +91,19 @@ gulp.task('serve', ['watch'], function() {
   nodemon({
     script: 'index.js',
     delay: 2500
+  });
+});
+
+gulp.task('test', function(done) {
+  environment = 'development';
+  return runSequence('serve', function() {
+    gulp.src('test/test.js', { read: false })
+      // pause while server starts up
+      .pipe(wait(3000))
+      // gulp-mocha needs filepaths so you can't have any plugins before it
+      .pipe(mocha())
+      .once('end', () => {
+        done();
+      });
   });
 });

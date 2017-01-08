@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "node test/test.js"
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
@@ -30,22 +30,24 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "chai-http": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.1",
     "gulp-if": "^2.0.2",
     "gulp-jshint": "^2.0.4",
     "gulp-less": "^3.3.0",
+    "gulp-mocha": "^3.0.1",
     "gulp-nodemon": "^2.2.1",
     "gulp-preprocess": "^2.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
     "gulp-uglifycss": "^1.0.6",
     "gulp-util": "^3.0.8",
+    "gulp-wait": "0.0.2",
     "gulp-watch": "^4.3.11",
     "jshint": "^2.9.4",
     "mocha": "^3.2.0",
     "run-sequence": "^1.2.2",
+    "supertest": "^2.0.1",
     "vinyl-source-stream": "^1.1.0",
     "yargs": "^6.6.0"
   }
