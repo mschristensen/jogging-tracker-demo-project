@@ -22,7 +22,7 @@ generators.async = function(makeGenerator) {
     } catch (ex) {
       return Promise.reject(ex);
     }
-  }
-}
+  };
+};
 
 module.exports = generators;

@@ -12,8 +12,8 @@ module.exports = function() {
     app = express();
 
     // Security
-    var helmet = require('helmet')
-    app.use(helmet())
+    var helmet = require('helmet');
+    app.use(helmet());
 
     app.use(morgan('common'));
     app.use(bodyParser.urlencoded({ extended: true }));

@@ -16,6 +16,6 @@ module.exports = function(app) {
     require('./' + routeName)(router);
 
     // Tie the router to it's url path
-    app.use('/' + changeCase.paramCase(routeName), router);
+    app.use('/api/' + changeCase.paramCase(routeName), router);
   });
 };

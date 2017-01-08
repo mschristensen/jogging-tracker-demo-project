@@ -32,7 +32,7 @@ gulp.task('dependencies', function() {
 });
 
 gulp.task('lint', function() {
-  gulp.src(['./public/app/**/*.js'])
+  gulp.src(['./public/app/**/*.js', '*.js', './utils/**/*.js', './test/**/*.js', './config/**/*.js', './app/**/*.js'])
     .pipe(jshint({
       node: true,
       // list of global variables and whether they are assignable
@@ -40,7 +40,8 @@ gulp.task('lint', function() {
         'angular': false,
         'Promise': false,
         'alert': false
-      }
+      },
+      esversion: 6
     }))
     .pipe(jshint.reporter('default'))
     .pipe(jshint.reporter('fail'));
