@@ -1,6 +1,6 @@
 'use strict';
 
-const Response = require('../response.js');
+const Response = require('../helpers/response.js');
 const User = require('../models/user.js');
 const passport = require('passport');
 const Strategy = require('passport-local');
@@ -16,6 +16,9 @@ module.exports = function(router) {
       }, req, res, next);
     }, function(req, res, next) {
       User.find({}, function(err, users) {
+        for(let idx in users) {
+          users[idx] = User.transform(users[idx], 'User');
+        }
         return Response.OK(users).send(res);
       });
     })

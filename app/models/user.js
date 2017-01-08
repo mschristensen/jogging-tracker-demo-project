@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
+const _ = require('lodash');
 
 const userSchema = new Schema({
   name:  {
@@ -55,7 +56,7 @@ const userSchema = new Schema({
   }
 });
 
-userSchema.pre('save', function (next) {
+userSchema.pre('save', function(next) {
   var user = this;
   if (this.isModified('password') || this.isNew) {
     bcrypt.genSalt(10, function (err, salt) {
@@ -82,6 +83,20 @@ userSchema.methods.comparePassword = function(password, cb) {
     }
     cb(null, isMatch);
   });
+};
+
+// ensure the schema of the supplied object is appropriate to a specific user role
+userSchema.statics.transform = function(user, role) {
+  user = user || {};
+  let schema = {
+    name: {
+      first: null,
+      last: null
+    },
+    email: null,
+    role: null
+  }
+  return _.pick(_.defaults(user, schema), _.keys(schema));
 };
 
 let User = mongoose.model('User', userSchema);

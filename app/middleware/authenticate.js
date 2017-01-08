@@ -1,6 +1,6 @@
 'use strict';
 
-const Response = require('../response.js');
+const Response = require('../helpers/response.js');
 const passport = require('passport');
 const User = require('../models/user.js');
 
@@ -19,5 +19,4 @@ module.exports = function(opts, req, res, next) {
       return next();
     });
   })(req, res, next);
-
 };

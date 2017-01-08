@@ -1,6 +1,6 @@
 'use strict';
 
-const Response = require('../response.js');
+const Response = require('../helpers/response.js');
 const User = require('../models/user.js');
 const logger = require('winston');
 const jwt = require('jsonwebtoken');

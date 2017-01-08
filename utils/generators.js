@@ -6,7 +6,7 @@ generators.async = function(makeGenerator) {
   return function () {
     let generator = makeGenerator.apply(this, arguments);
 
-    function handle(result){
+    function handle(result) {
       // result => { done: [Boolean], value: [Object] }
       if (result.done) return Promise.resolve(result.value);
 
