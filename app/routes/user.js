@@ -4,76 +4,31 @@ const Response = require('../response.js');
 const User = require('../models/user.js');
 const passport = require('passport');
 const Strategy = require('passport-local');
-const jwt = require('jsonwebtoken');
 const logger = require('winston');
 const authenticate = require('../middleware/authenticate.js');
+const UserController = require('../controllers/user.js');
 
 module.exports = function(router) {
   router.route('/')
     .get(authenticate, function(req, res, next) {
       User.find({}, function(err, users) {
-        console.log(users);
         return Response.OK(users).send(res);
       });
     })
     .post(function(req, res) {
-      if(!req.body.email || !req.body.password) {
-        return Response.BadRequest({ message: 'missing email or password' }).send(res);
-      } else {
-        User.findOne({
-          email: req.body.email
-        }, function(err, user) {
-          if(err) throw err;
-
-          if(user) {
-            return Response.BadRequest({ message: 'user already exists' }).send(res);
-          }
-
-          let newUser;
-          try {
-            newUser = new User({
-              email: req.body.email,
-              password: req.body.password,
-              name: JSON.parse(req.body.name)
-            });
-          } catch(err) {
-            return Response.BadRequest({ message: "unable to parse some arguments" }).send(res);
-          }
-
-          newUser.save(function(err) {
-            if (err) {
-              if(err.name === 'ValidationError') {
-                let invalids = [];
-                for(let invalid in err.errors) {
-                  invalids.push(invalid);
-                }
-                return Response.BadRequest({ InvalidArguments: invalids }).send(res);
-              } else {
-                logger.error('unable to save new user:', err);
-                return Response.InternalServerError({ message: 'unable to save user' }).send(res);
-              }
-            }
-            Response.OK().send(res);
-          });
-        });
-      }
+      UserController.signup(req.body).then(function(response) {
+        return response.send(res);
+      }, function() {
+        return Response.InternalServerError().send(res);
+      });
     });
 
   router.route('/authenticate')
     .post(function(req, res) {
-      User.findOne({
-        email: req.body.email
-      }, function(err, user) {
-        if (err) throw err;
-        if (!user) return Response.NotFound().send(res);
-
-        user.comparePassword(req.body.password, function(err, isMatch) {
-          if(!isMatch || err) return Response.Forbidden().send(res);
-          let token = jwt.sign(user, process.env.SECRET, {
-            expiresIn: 86400  // 24 hours
-          });
-          return Response.OK({ token: 'JWT ' + token }).send(res);
-        });
+      UserController.login(req.body).then(function(response) {
+        return response.send(res);
+      }, function() {
+        return Response.InternalServerError().send(res);
       });
     });
 };

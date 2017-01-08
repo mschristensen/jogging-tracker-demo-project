@@ -30,7 +30,6 @@ const userSchema = new Schema({
     lowercase: true,
     unique: true,
     required: true,
-    unique: true,
     validate: {
       validator: function(v) {
         // Check whether a string is an email using regex and the RFC822 spec
