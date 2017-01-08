@@ -6,10 +6,11 @@ const passport = require('passport');
 const Strategy = require('passport-local');
 const jwt = require('jsonwebtoken');
 const logger = require('winston');
+const authenticate = require('../middleware/authenticate.js');
 
 module.exports = function(router) {
   router.route('/')
-    .get(passport.authenticate('jwt', { session: false }), function(req, res, next) {
+    .get(authenticate, function(req, res, next) {
       User.find({}, function(err, users) {
         return Response.OK(users).send(res);
       });
@@ -27,8 +28,9 @@ module.exports = function(router) {
             return Response.BadRequest({ message: 'user already exists' }).send(res);
           }
 
+          let newUser;
           try {
-            let newUser = new User({
+            newUser = new User({
               email: req.body.email,
               password: req.body.password,
               name: JSON.parse(req.body.name)
