@@ -1,9 +1,9 @@
 'use strict';
 
-var server = require('./config/initialisers/server');
-var database = require('./config/initialisers/database');
-var nconf = require('nconf');
-var logger = require('winston');
+const server = require('./config/initialisers/server');
+const database = require('./config/initialisers/database');
+const nconf = require('nconf');
+const logger = require('winston');
 
 // Load env vars from .env file into process.env
 require('dotenv').load();
@@ -21,10 +21,10 @@ logger.info('[APP] Starting server initialization');
 
 // Start the server
 module.exports = new Promise(function(resolve, reject) {
-  database().then(server).then(function(app) {
+  database().then(server).then((app) => {
     logger.info('[APP] initialized SUCCESSFULLY');
     resolve(app);
-  }).catch(function(err) {
+  }).catch((err) => {
     logger.error('[APP] initialization failed', err);
     reject(err);
   });

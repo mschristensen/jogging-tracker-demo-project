@@ -21,7 +21,7 @@ module.exports = class Response {
       payload: this.payload || []
     };
     res.statusCode = this.statusCode;
-    for(var key in this.headers) {
+    for(let key in this.headers) {
       res.set(key.toLowerCase(), this.headers[key]);
     }
     switch(this.statusCode) {

@@ -1,4 +1,4 @@
-var nconf = require('nconf');
+const nconf = require('nconf');
 nconf.set('url', '');
 
 nconf.set('database', {

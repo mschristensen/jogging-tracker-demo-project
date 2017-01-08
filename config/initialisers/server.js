@@ -1,18 +1,18 @@
 'use strict';
 
-var express = require('express');
-var config = require('nconf');
-var bodyParser = require('body-parser');
-var morgan = require('morgan');
-var logger = require('winston');
-var app;
+const express = require('express');
+const config = require('nconf');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const logger = require('winston');
+let app;
 
 module.exports = function() {
   return new Promise(function(resolve, reject) {
     app = express();
 
     // Security
-    var helmet = require('helmet');
+    let helmet = require('helmet');
     app.use(helmet());
 
     app.use(morgan('common'));

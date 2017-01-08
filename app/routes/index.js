@@ -1,13 +1,13 @@
 'use strict';
 
-var changeCase = require('change-case');
-var express = require('express');
-var routes = require('require-dir')();  // requires all other files in this directory
+const changeCase = require('change-case');
+const express = require('express');
+const routes = require('require-dir')();  // requires all other files in this directory
 
 module.exports = function(app) {
   // Initialize all routes
   Object.keys(routes).forEach(function(routeName) {
-    var router = express.Router();
+    let router = express.Router();
 
     // Middleware:
     // router.use(someMiddleware);

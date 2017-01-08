@@ -1,7 +1,7 @@
 'use strict';
 
-var Response = require('../response.js');
-var User = require('../models/user.js');
+const Response = require('../response.js');
+const User = require('../models/user.js');
 
 module.exports = function(router) {
   router.route('/')

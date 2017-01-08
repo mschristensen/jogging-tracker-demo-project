@@ -1,7 +1,7 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var logger = require('winston');
+const mongoose = require('mongoose');
+const logger = require('winston');
 
 module.exports = function() {
   return new Promise(function(resolve, reject) {

@@ -1,22 +1,24 @@
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var gulpstream = require('vinyl-source-stream');
-var nodemon = require('gulp-nodemon');
-var rename = require("gulp-rename");
-var args = require('yargs').argv;
-var gulpif = require('gulp-if');
-var preprocess = require('gulp-preprocess');
-var watch = require('gulp-watch');
-var runSequence = require('run-sequence');
-var jshint = require('gulp-jshint');
-var concat = require('gulp-concat');
-var less = require('gulp-less');
-var uglify = require('gulp-uglify');
-var uglifycss = require('gulp-uglifycss');
-var mocha = require('gulp-mocha');
-var wait = require('gulp-wait');
+'use strict';
 
-var environment = args.env || process.env.NODE_ENV;
+const gulp = require('gulp');
+const gutil = require('gulp-util');
+const gulpstream = require('vinyl-source-stream');
+const nodemon = require('gulp-nodemon');
+const rename = require("gulp-rename");
+const args = require('yargs').argv;
+const gulpif = require('gulp-if');
+const preprocess = require('gulp-preprocess');
+const watch = require('gulp-watch');
+const runSequence = require('run-sequence');
+const jshint = require('gulp-jshint');
+const concat = require('gulp-concat');
+const less = require('gulp-less');
+const uglify = require('gulp-uglify');
+const uglifycss = require('gulp-uglifycss');
+const mocha = require('gulp-mocha');
+const wait = require('gulp-wait');
+
+let environment = args.env || process.env.NODE_ENV;
 
 gulp.task('html', function() {
   gulp.src('./public/index.template.html')
