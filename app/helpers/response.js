@@ -1,5 +1,7 @@
 'use strict';
 
+const logger = require('winston');
+
 module.exports = class Response {
   constructor(statusCode, headers, payload) {
     if (typeof statusCode !== 'number') {
@@ -110,5 +112,20 @@ module.exports = class Response {
   }
   static ServiceUnavailable(payload) {
     return new Response(503, { 'Content-Type': 'application/json' }, payload);
+  }
+
+  // CUSTOM ERRORS
+  static MongooseError(err) {
+    // Transform common mongoose errors like ValidationError into a formatted response object
+    if(err.name === 'ValidationError') {
+      let invalids = [];
+      for(let invalid in err.errors) {
+        invalids.push(invalid);
+      }
+      return Response.BadRequest({ InvalidArguments: invalids });
+    } else {
+      logger.error('Mongoose Error:', err);
+      return Response.InternalServerError();
+    }
   }
 };

@@ -35,16 +35,7 @@ UserController.signup = function(data) {
 
       newUser.save(function(err) {
         if (err) {
-          if(err.name === 'ValidationError') {
-            let invalids = [];
-            for(let invalid in err.errors) {
-              invalids.push(invalid);
-            }
-            return resolve(Response.BadRequest({ InvalidArguments: invalids }));
-          } else {
-            logger.error('unable to save new user:', err);
-            return resolve(Response.InternalServerError({ message: 'unable to save user' }));
-          }
+          return resolve(Response.MongooseError(err));
         }
         UserController.login(data).then(function(response) {
           return resolve(response);

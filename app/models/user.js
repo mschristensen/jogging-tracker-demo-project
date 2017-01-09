@@ -5,6 +5,12 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
 const _ = require('lodash');
 
+const Roles = {
+  User: 1,
+  UserManager: 2,
+  Admin: 3
+};
+
 const userSchema = new Schema({
   name:  {
     first: {
@@ -50,9 +56,14 @@ const userSchema = new Schema({
     }
   },
   role: {
-    type: String,
-    enum: ['User', 'UserManager', 'Admin'],
-    default: 'User'
+    type: Number,
+    enum: (function() {
+      // map the values of the keys in Roles to an array
+      return Object.keys(Roles).map((key) => {
+        return Roles[key];
+      });
+    })(),
+    default: Roles.User
   }
 });
 
@@ -97,6 +108,10 @@ userSchema.statics.transform = function(user, role) {
     role: null
   };
   return _.pick(_.defaults(user, schema), _.keys(schema));
+};
+
+userSchema.statics.Roles = function() {
+  return Roles;
 };
 
 let User = mongoose.model('User', userSchema);

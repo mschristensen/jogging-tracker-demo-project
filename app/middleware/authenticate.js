@@ -16,6 +16,7 @@ module.exports = function(opts, req, res, next) {
       if(opts.allowedRoles.indexOf(user.role) === -1) {
         return Response.Forbidden({ allowedRoles: opts.allowedRoles }).send(res);
       }
+      req.user = user;
       return next();
     });
   })(req, res, next);
