@@ -18,8 +18,9 @@ module.exports = function() {
         password: 'pw',
         name: JSON.stringify({ first: 'F', last: 'L' })
       })
-      .expect(403)
+      .expect(400)
       .end((err, res) => {
+        if(err) throw err;
         expect(res.body.payload.InvalidArguments).to.be.an('array');
         expect(res.body.payload.InvalidArguments).to.include('email');
         expect(res.body.payload.InvalidArguments).to.include('password');
@@ -39,6 +40,7 @@ module.exports = function() {
       })
       .expect(200)
       .end((err, res) => {
+        if(err) throw err;
         expect(res.body.payload).to.include.keys('token');
         token = res.body.payload.token;
         done();
@@ -50,6 +52,7 @@ module.exports = function() {
       .set('Authorization', token)
       .expect(200)
       .end((err, res) => {
+        if(err) throw err;
         expect(res.body.payload[0]).to.include.keys('name');
         expect(res.body.payload[0].name).to.include.keys('first');
         expect(res.body.payload[0].name).to.include.keys('last');
@@ -70,6 +73,7 @@ module.exports = function() {
       })
       .expect(200)
       .end((err, res) => {
+        if(err) throw err;
         expect(res.body.payload).to.include.keys('token');
         token = res.body.payload.token;
         done();
@@ -81,6 +85,7 @@ module.exports = function() {
       .set('Authorization', token)
       .expect(200)
       .end((err, res) => {
+        if(err) throw err;
         expect(res.body.payload[0]).to.include.keys('name');
         expect(res.body.payload[0].name).to.include.keys('first');
         expect(res.body.payload[0].name).to.include.keys('last');
@@ -98,6 +103,7 @@ module.exports = function() {
       .set('Authorization', shuffledToken)
       .expect(403)
       .end((err, res) => {
+        if(err) throw err;
         expect(res.body.payload).to.be.empty;
         done();
       });

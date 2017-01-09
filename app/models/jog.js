@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const _ = require('lodash');
 
 const jogSchema = new Schema({
   user_id: {
@@ -16,13 +17,34 @@ const jogSchema = new Schema({
   },
   distance: {
     type: Number,
-    required: true
+    required: true,
+    validate: {
+      validator: function(v) {
+        return v > 0;
+      }
+    }
   },
   time: {
     type: Number,
-    required: true
+    required: true,
+    validate: {
+      validator: function(v) {
+        return v > 0;
+      }
+    }
   }
 });
+
+// ensure the schema of the supplied object is appropriate
+jogSchema.statics.transform = function(jog) {
+  jog = jog || {};
+  let schema = {
+    date: null,
+    distance: null,
+    time: null
+  };
+  return _.pick(_.defaults(jog, schema), _.keys(schema));
+};
 
 let Jog = mongoose.model('Jog', jogSchema);
 
