@@ -7,28 +7,9 @@
 const should = require('chai').should();
 const expect = require('chai').expect;
 const api = require('supertest')('http://localhost:3000/api');
-const mongoose = require('mongoose');
-const nconf = require('nconf');
 
 module.exports = function() {
-  // Load env vars from .env file into process.env
-  require('dotenv').load();
-  nconf.use('memory');
-  nconf.argv();
-  nconf.env();
-
   describe('Users', () => {
-    // before running tests, empty the database
-    before(function (done) {
-      mongoose.connect(process.env.MONGOLAB_URI, function(err) {
-        if(err) throw err;
-        mongoose.connection.db.dropDatabase(function(err) {
-          if(err) throw err;
-          done();
-        });
-      });
-    });
-
     let token;
     it('should have invalid email, password and name', (done) => {
       api.post('/user')
