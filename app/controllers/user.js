@@ -46,7 +46,9 @@ UserController.signup = function(data) {
             return resolve(Response.InternalServerError({ message: 'unable to save user' }));
           }
         }
-        return resolve(Response.OK());
+        UserController.login(data).then(function(response) {
+          return resolve(response);
+        }, reject);
       });
     });
   });

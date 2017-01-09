@@ -95,7 +95,7 @@ userSchema.statics.transform = function(user, role) {
     },
     email: null,
     role: null
-  }
+  };
   return _.pick(_.defaults(user, schema), _.keys(schema));
 };
 
