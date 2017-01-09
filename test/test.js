@@ -1,4 +1,5 @@
 /* global before */
+/* global beforeEach */
 /* global describe */
 'use strict';
 
@@ -46,22 +47,45 @@ function createAdmin() {
   });
 }
 
-describe('API Test', () => {
-  // before running tests, empty the database and create UserManager and Admin users
-  before(function (done) {
-    mongoose.connect(process.env.MONGOLAB_URI, function(err) {
-      if(err) throw err;
+function connectToDB() {
+  return new Promise(function(resolve, reject) {
+    if(mongoose.connection.readyState !== 1) {  // if not connected...
+      mongoose.connect(process.env.MONGOLAB_URI, function(err) {
+        if(err) return reject(err);
+        resolve();
+      });
+    } else {
+      return resolve();
+    }
+  });
+}
+
+function initDB() {
+  return new Promise(function(resolve, reject) {
+    connectToDB().then(function() {
       mongoose.connection.db.dropDatabase(function(err) {
-        if(err) throw err;
+        if(err) return reject(err);
         createUserManager().then(createAdmin).then(function() {
-          return done();
-        }).catch(function(err) {
-          throw err;
-        });
+          return resolve();
+        }).catch(reject);
       });
     });
   });
+}
 
-  require('./user.js')();
-  require('./jog.js')();
+function makeSuite(name, tests) {
+  describe(name, function () {
+    // before each test suite, empty the database and create UserManager and Admin users
+    before(function(done) {
+      initDB().then(done, function(err) {
+        throw err;
+      });
+    });
+    tests();
+  });
+}
+
+describe('API Test', () => {
+  makeSuite('Users', require('./user.js'));
+  makeSuite('Jogs', require('./jog.js'));
 });
