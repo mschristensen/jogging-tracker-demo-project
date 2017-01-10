@@ -21,7 +21,7 @@ module.exports = function(router) {
         // Non-Admins can only query using their own id
         if(req.user.role === User.Roles().Admin) {
           jogData.user_id = new ObjectId(req.query.user_id);
-        } else if(req.user._id !== req.query.user_id) {
+        } else if(req.user._id != req.query.user_id) {
           return Response.Forbidden().send(res);
         }
       } else {

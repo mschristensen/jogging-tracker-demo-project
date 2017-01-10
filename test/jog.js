@@ -16,8 +16,8 @@ module.exports = function() {
   // DONE read jogs
   // DONE fail to read jogs without valid token
   // DONE (login as User Two)
-  // fetch User One _id as Admin
-  // fail to read User One's jog
+  // DONE fetch User One _id
+  // DONE fail to read User One's jog
   // (login as Admin)
   // create own jog
   // create jog for User
@@ -41,6 +41,7 @@ module.exports = function() {
         done();
       });
   });
+
   it('should fail to create a valid jog', (done) => {
     api.post('/jog')
       .set('Authorization', userOneToken)
@@ -59,6 +60,7 @@ module.exports = function() {
         done();
       });
   });
+
   it('should fail to create jog with invalid token', (done) => {
     // randomly shuffle the token characters (after the 'JWT ' head)
     let shuffledToken = userOneToken.slice(4).split('').sort(function() { return 0.5 - Math.random(); }).join('');
@@ -77,6 +79,7 @@ module.exports = function() {
         done();
       });
   });
+
   it('should successfully create jog', (done) => {
     api.post('/jog')
       .set('Content-Type', 'application/x-www-form-urlencoded')
@@ -92,6 +95,7 @@ module.exports = function() {
         done();
       });
   });
+
   it('should fail to read own jogs with invalid token', (done) => {
     // randomly shuffle the token characters (after the 'JWT ' head)
     let shuffledToken = userOneToken.slice(4).split('').sort(function() { return 0.5 - Math.random(); }).join('');
@@ -104,6 +108,7 @@ module.exports = function() {
         done();
       });
   });
+
   it('should successfully read own jogs', (done) => {
     api.get('/jog')
       .set('Authorization', userOneToken)
@@ -116,6 +121,40 @@ module.exports = function() {
         done();
       });
   });
+
+  let userOneId;
+  it('should successfully read own user object', (done) => {
+    api.get('/user/me')
+      .set('Authorization', userOneToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('name');
+        expect(res.body.payload[0].name).to.include.keys('first');
+        expect(res.body.payload[0].name).to.include.keys('last');
+        expect(res.body.payload[0]).to.include.keys('email');
+        expect(res.body.payload[0]).to.include.keys('role');
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.not.include.keys('password');
+        userOneId = res.body.payload[0]._id;
+        done();
+      });
+  });
+
+  it('should successfully read own jogs using id query argument', (done) => {
+    api.get('/jog')
+      .query({ user_id: userOneId })
+      .set('Authorization', userOneToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
+        done();
+      });
+  });
+
   let userTwoToken;
   it('should successfully create User Two and return token', (done) => {
     api.post('/user')
@@ -133,15 +172,16 @@ module.exports = function() {
         done();
       });
   });
-  // it('should fail to read User One jogs using User Two token', (done) => {
-  //   api.get('/jog')
-  //     .query({ user_id:  })
-  //     .set('Authorization', userTwoToken)
-  //     .expect(403)
-  //     .end((err, res) => {
-  //       if(err) throw err;
-  //       expect(res.body.payload).to.be.empty;
-  //       done();
-  //     });
-  // });
+
+  it('should fail to read User One jogs using User Two token', (done) => {
+    api.get('/jog')
+      .query({ user_id: userOneId })
+      .set('Authorization', userTwoToken)
+      .expect(403)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
 };
