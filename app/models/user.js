@@ -51,7 +51,7 @@ const userSchema = new Schema({
     required: true,
     validate: {
       validator: function(v) {
-        return v.length > 2 && v.length < 25;
+        return v.length > 2;
       }
     }
   },

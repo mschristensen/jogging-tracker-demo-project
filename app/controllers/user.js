@@ -52,7 +52,7 @@ UserController.login = function(data) {
     }, function(err, user) {
       if (err) throw err;
       if (!user) return resolve(Response.NotFound());
-      
+
       user.comparePassword(data.password, function(err, isMatch) {
         if(!isMatch || err) return resolve(Response.Forbidden());
         let token = jwt.sign(user, process.env.SECRET, {
@@ -64,15 +64,30 @@ UserController.login = function(data) {
   });
 };
 
-UserController.read = function(data) {
+UserController.read = function(select) {
   return new Promise(function(resolve, reject) {
-    data = data || {};
-    User.find(data, function(err, users) {
+    select = select || {};
+    User.find(select, function(err, users) {
       if(err) return reject(err);
       for(let idx in users) {
         users[idx] = User.transform(users[idx]);
       }
       return resolve(Response.OK(users));
+    });
+  });
+};
+
+UserController.update = function(select, data) {
+  return new Promise(function(resolve, reject) {
+    User.findOne(select, function(err, user) {
+      for(let key in data) {
+        user[key] = data[key];
+      }
+      user.save(function(err, updatedUser) {
+        if(err) return resolve(Response.MongooseError(err));
+        updatedUser = User.transform(updatedUser);
+        return resolve(Response.OK(updatedUser));
+      });
     });
   });
 };
