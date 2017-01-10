@@ -86,6 +86,6 @@ function makeSuite(name, tests) {
 }
 
 describe('API Test', () => {
-  //makeSuite('Users', require('./user.js'));
+  makeSuite('Users', require('./user.js'));
   makeSuite('Jogs', require('./jog.js'));
 });

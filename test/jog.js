@@ -287,7 +287,7 @@ module.exports = function() {
         done();
       });
   });
-  
+
   let jogId;
   it('should successfully create jog as User One', (done) => {
     api.post('/jog')
@@ -469,4 +469,28 @@ module.exports = function() {
         done();
       });
   });
+
+  it('should successfully delete User One', (done) => {
+    api.delete('/user/me')
+      .set('Authorization', userOneToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should successfully verify as Admin that User One has no jogs', (done) => {
+    api.get('/jog')
+      .query({ user_id: userOneId })
+      .set('Authorization', adminToken)
+      .expect(404)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
 };

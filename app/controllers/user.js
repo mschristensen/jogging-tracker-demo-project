@@ -2,6 +2,7 @@
 
 const Response = require('../helpers/response.js');
 const User = require('../models/user.js');
+const Jog = require('../models/jog.js');
 const logger = require('winston');
 const jwt = require('jsonwebtoken');
 
@@ -86,10 +87,17 @@ UserController.update = function(select, data) {
 
 UserController.delete = function(select) {
   return new Promise(function(resolve, reject) {
+    if(!select._id) return resolve(Response.BadRequest({ message: 'must supply the user id parameter' }));
+
     User.findOneAndRemove(select, function(err, user) {
       if(err) return resolve(Response.MongooseError(err));
       if(!user) return resolve(Response.NotFound());
-      return resolve(Response.OK());
+
+      // delete all jogs for this user
+      Jog.remove({ user_id: select._id }, function(err) {
+        if(err) return resolve(Response.MongooseError(err));
+        return resolve(Response.OK());
+      });
     });
   });
 };
