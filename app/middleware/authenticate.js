@@ -8,7 +8,6 @@ module.exports = function(opts, req, res, next) {
   passport.authenticate('jwt', function(err, user, info) {
     if(err) { return next(err); }
     if(!user) { return Response.Forbidden().send(res); }
-
     User.findOne({
       email: user.email
     }, function(err, user) {

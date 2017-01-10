@@ -10,14 +10,15 @@ module.exports = function(router) {
   router.route('/')
     .get(function(req, res, next) {
       return authenticate({
-        allowedRoles: [User.Roles().User, User.Roles().UserManager, User.Roles().Admin]
+        allowedRoles: [User.Roles().UserManager, User.Roles().Admin]
       }, req, res, next);
     }, function(req, res, next) {
-      User.find({}, function(err, users) {
-        for(let idx in users) {
-          users[idx] = User.transform(users[idx], User.Roles().User);
-        }
-        return Response.OK(users).send(res);
+      console.log("YO");
+      UserController.read().then(function(response) {
+        return response.send(res);
+      }, function(err) {
+        logger.error('error reading users', err);
+        return Response.InternalServerError().send(res);
       });
     })
     .post(function(req, res) {

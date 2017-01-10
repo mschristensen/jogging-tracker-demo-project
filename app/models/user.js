@@ -96,8 +96,8 @@ userSchema.methods.comparePassword = function(password, cb) {
   });
 };
 
-// ensure the schema of the supplied object is appropriate to a specific user role
-userSchema.statics.transform = function(user, role) {
+// ensure the schema of the supplied object is appropriate
+userSchema.statics.transform = function(user) {
   user = user || {};
   let schema = {
     _id: null,

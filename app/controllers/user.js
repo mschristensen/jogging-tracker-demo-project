@@ -52,7 +52,7 @@ UserController.login = function(data) {
     }, function(err, user) {
       if (err) throw err;
       if (!user) return resolve(Response.NotFound());
-
+      
       user.comparePassword(data.password, function(err, isMatch) {
         if(!isMatch || err) return resolve(Response.Forbidden());
         let token = jwt.sign(user, process.env.SECRET, {
@@ -60,6 +60,19 @@ UserController.login = function(data) {
         });
         return resolve(Response.OK({ token: 'JWT ' + token }));
       });
+    });
+  });
+};
+
+UserController.read = function(data) {
+  return new Promise(function(resolve, reject) {
+    data = data || {};
+    User.find(data, function(err, users) {
+      if(err) return reject(err);
+      for(let idx in users) {
+        users[idx] = User.transform(users[idx]);
+      }
+      return resolve(Response.OK(users));
     });
   });
 };
