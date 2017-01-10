@@ -58,6 +58,7 @@ module.exports = function() {
         expect(res.body.payload[0].name).to.include.keys('last');
         expect(res.body.payload[0]).to.include.keys('email');
         expect(res.body.payload[0]).to.include.keys('role');
+        expect(res.body.payload[0]).to.include.keys('_id');
         expect(res.body.payload[0]).to.not.include.keys('password');
         done();
       });
@@ -91,6 +92,7 @@ module.exports = function() {
         expect(res.body.payload[0].name).to.include.keys('last');
         expect(res.body.payload[0]).to.include.keys('email');
         expect(res.body.payload[0]).to.include.keys('role');
+        expect(res.body.payload[0]).to.include.keys('_id');
         expect(res.body.payload[0]).to.not.include.keys('password');
         done();
       });

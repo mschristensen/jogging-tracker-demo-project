@@ -100,6 +100,7 @@ userSchema.methods.comparePassword = function(password, cb) {
 userSchema.statics.transform = function(user, role) {
   user = user || {};
   let schema = {
+    _id: null,
     name: {
       first: null,
       last: null

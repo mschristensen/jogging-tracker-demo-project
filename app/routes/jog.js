@@ -16,9 +16,14 @@ module.exports = function(router) {
       }, req, res, next);
     }, function(req, res, next) {
       let jogData = {};
-      if(req.user.role === User.Roles().Admin && req.body.user_id) {
-        // Admins can read any user's jogs, given by <user_id>
-        jogData.user_id = new ObjectId(req.body.user_id);
+      if(req.query.user_id) {
+        // Only Admins can read any user's jogs, given by <user_id>
+        // Non-Admins can only query using their own id
+        if(req.user.role === User.Roles().Admin) {
+          jogData.user_id = new ObjectId(req.query.user_id);
+        } else if(req.user._id !== req.query.user_id) {
+          return Response.Forbidden().send(res);
+        }
       } else {
         // Otherwise read authenticated user's own jogs
         jogData.user_id = new ObjectId(req.user._id);

@@ -15,7 +15,8 @@ module.exports = function() {
   // DONE create jog
   // DONE read jogs
   // DONE fail to read jogs without valid token
-  // (login as User Two)
+  // DONE (login as User Two)
+  // fetch User One _id as Admin
   // fail to read User One's jog
   // (login as Admin)
   // create own jog
@@ -115,4 +116,32 @@ module.exports = function() {
         done();
       });
   });
+  let userTwoToken;
+  it('should successfully create User Two and return token', (done) => {
+    api.post('/user')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({
+        email: 'user@two.com',
+        password: 'password',
+        name: JSON.stringify({ first: 'User', last: 'Two' })
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.include.keys('token');
+        userTwoToken = res.body.payload.token;
+        done();
+      });
+  });
+  // it('should fail to read User One jogs using User Two token', (done) => {
+  //   api.get('/jog')
+  //     .query({ user_id:  })
+  //     .set('Authorization', userTwoToken)
+  //     .expect(403)
+  //     .end((err, res) => {
+  //       if(err) throw err;
+  //       expect(res.body.payload).to.be.empty;
+  //       done();
+  //     });
+  // });
 };
