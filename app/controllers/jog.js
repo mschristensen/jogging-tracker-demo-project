@@ -10,7 +10,7 @@ JogController.create = function(data) {
   return new Promise(function(resolve, reject) {
     let newJog = new Jog(data);
     newJog.save(function(err) {
-      if (err) {
+      if(err) {
         return resolve(Response.MongooseError(err));
       }
       return resolve(Response.OK());

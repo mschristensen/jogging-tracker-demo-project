@@ -39,6 +39,7 @@ const jogSchema = new Schema({
 jogSchema.statics.transform = function(jog) {
   jog = jog || {};
   let schema = {
+    _id: null,
     date: null,
     distance: null,
     time: null
