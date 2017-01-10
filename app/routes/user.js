@@ -9,7 +9,17 @@ const UserController = require('../controllers/user.js');
 module.exports = function(router) {
   router.route('/')
     .post(function(req, res) {
-      UserController.signup(req.body).then(function(response) {
+      let userData;
+      try {
+        userData = {
+          email: req.body.email,
+          password: req.body.password,
+          name: JSON.parse(req.body.name)
+        };
+      } catch(err) {
+        return Response.BadRequest({ message: "unable to parse some arguments" }).send(res);
+      }
+      UserController.signup(userData).then(function(response) {
         return response.send(res);
       }, function() {
         return Response.InternalServerError().send(res);
@@ -47,8 +57,12 @@ module.exports = function(router) {
       }, req, res, next);
     }, function(req, res, next) {
       let userData = {};
-      if(req.body.name) userData.name = JSON.parse(req.body.name);
-      if(req.body.email) userData.email = req.body.email;
+      try {
+        if(req.body.name) userData.name = JSON.parse(req.body.name);
+        if(req.body.email) userData.email = req.body.email;
+      } catch(err) {
+        return Response.BadRequest({ message: "unable to parse some arguments" }).send(res);
+      }
       UserController.update({ _id: req.user._id }, userData).then(function(response) {
         return response.send(res);
       }, function(err) {

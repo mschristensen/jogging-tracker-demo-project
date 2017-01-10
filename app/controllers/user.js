@@ -22,18 +22,7 @@ UserController.signup = function(data) {
         return resolve(Response.BadRequest({ message: 'user already exists' }));
       }
 
-      let newUser;
-      try {
-        newUser = new User({
-          email: data.email,
-          password: data.password,
-          name: JSON.parse(data.name)
-        });
-      } catch(err) {
-        return resolve(Response.BadRequest({ message: "unable to parse some arguments" }));
-      }
-
-      newUser.save(function(err) {
+      new User(data).save(function(err) {
         if (err) {
           return resolve(Response.MongooseError(err));
         }
@@ -69,6 +58,7 @@ UserController.read = function(select) {
     select = select || {};
     User.find(select, function(err, users) {
       if(err) return reject(err);
+      if(users.length === 0) return resolve(Response.NotFound());
       for(let idx in users) {
         users[idx] = User.transform(users[idx]);
       }
@@ -80,12 +70,14 @@ UserController.read = function(select) {
 UserController.update = function(select, data) {
   return new Promise(function(resolve, reject) {
     User.findOne(select, function(err, user) {
+      if(err) return reject(err);
+      if(!user) return resolve(Response.NotFound());
       for(let key in data) {
         user[key] = data[key];
       }
       user.save(function(err, updatedUser) {
         if(err) return resolve(Response.MongooseError(err));
-        updatedUser = User.transform(updatedUser);
+        updatedUser = [User.transform(updatedUser)];
         return resolve(Response.OK(updatedUser));
       });
     });
@@ -94,8 +86,9 @@ UserController.update = function(select, data) {
 
 UserController.delete = function(select) {
   return new Promise(function(resolve, reject) {
-    User.findOneAndRemove(select, function(err) {
+    User.findOneAndRemove(select, function(err, user) {
       if(err) return resolve(Response.MongooseError(err));
+      if(!user) return resolve(Response.NotFound());
       return resolve(Response.OK());
     });
   });

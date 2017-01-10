@@ -80,7 +80,6 @@ module.exports = function() {
 
   let userManagerToken;
   it('should successfully login as UserManager and receive token', (done) => {
-    token = null;
     api.post('/user/authenticate')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .send({
@@ -159,4 +158,170 @@ module.exports = function() {
         done();
       });
   });
+
+  it('should successfully update self as User', (done) => {
+    api.put('/user/me')
+      .set('Authorization', token)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({ name: JSON.stringify({ first: 'New', last: 'Name' }) })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('name');
+        expect(res.body.payload[0].name).to.include.keys('first');
+        expect(res.body.payload[0].name.first).to.equal('New');
+        expect(res.body.payload[0].name).to.include.keys('last');
+        expect(res.body.payload[0].name.last).to.equal('Name');
+        expect(res.body.payload[0]).to.include.keys('email');
+        expect(res.body.payload[0]).to.include.keys('role');
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.not.include.keys('password');
+        done();
+      });
+  });
+
+  it('should successfully delete self as User', (done) => {
+    api.delete('/user/me')
+      .set('Authorization', token)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  let userOneToken;
+  it('should successfully create User One and return token', (done) => {
+    api.post('/user')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({
+        email: 'user@one.com',
+        password: 'password',
+        name: JSON.stringify({ first: 'User', last: 'One' })
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.include.keys('token');
+        userOneToken = res.body.payload.token;
+        done();
+      });
+  });
+
+  let userTwoToken;
+  it('should successfully create User Two and return token', (done) => {
+    api.post('/user')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({
+        email: 'user@two.com',
+        password: 'password',
+        name: JSON.stringify({ first: 'User', last: 'Two' })
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.include.keys('token');
+        userTwoToken = res.body.payload.token;
+        done();
+      });
+  });
+
+  let userOneId;
+  it('should successfully read own user object as User One', (done) => {
+    api.get('/user/me')
+      .set('Authorization', userOneToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('name');
+        expect(res.body.payload[0].name).to.include.keys('first');
+        expect(res.body.payload[0].name).to.include.keys('last');
+        expect(res.body.payload[0]).to.include.keys('email');
+        expect(res.body.payload[0]).to.include.keys('role');
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.not.include.keys('password');
+        userOneId = res.body.payload[0]._id;
+        done();
+      });
+  });
+
+  it('should successfully update self as User One by specifying id', (done) => {
+    api.put('/user/' + userOneId)
+      .set('Authorization', userOneToken)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({ name: JSON.stringify({ first: 'New', last: 'Name' }) })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('name');
+        expect(res.body.payload[0].name).to.include.keys('first');
+        expect(res.body.payload[0].name.first).to.equal('New');
+        expect(res.body.payload[0].name).to.include.keys('last');
+        expect(res.body.payload[0].name.last).to.equal('Name');
+        expect(res.body.payload[0]).to.include.keys('email');
+        expect(res.body.payload[0]).to.include.keys('role');
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.not.include.keys('password');
+        done();
+      });
+  });
+
+  it('should fail to update User One as User Two by specifying id', (done) => {
+    api.put('/user/' + userOneId)
+      .set('Authorization', userTwoToken)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({ name: JSON.stringify({ first: 'New', last: 'Name' }) })
+      .expect(403)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should fail to delete User One as User Two', (done) => {
+    api.delete('/user/' + userOneId)
+      .set('Authorization', userTwoToken)
+      .expect(403)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should successfully update User One as Admin', (done) => {
+    api.put('/user/' + userOneId)
+      .set('Authorization', adminToken)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({ name: JSON.stringify({ first: 'New', last: 'Name' }) })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('name');
+        expect(res.body.payload[0].name).to.include.keys('first');
+        expect(res.body.payload[0].name.first).to.equal('New');
+        expect(res.body.payload[0].name).to.include.keys('last');
+        expect(res.body.payload[0].name.last).to.equal('Name');
+        expect(res.body.payload[0]).to.include.keys('email');
+        expect(res.body.payload[0]).to.include.keys('role');
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.not.include.keys('password');
+        done();
+      });
+  });
+
+  it('should successfully delete User One as Admin', (done) => {
+    api.delete('/user/' + userOneId)
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  // test 404 on update/delete for non-existent user ids
 };

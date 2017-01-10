@@ -24,6 +24,7 @@ JogController.read = function(data) {
       if(err) {
         return resolve(Response.MongooseError(err));
       }
+      if(jogs.length === 0) return resolve(Response.NotFound());
       for(let idx in jogs) {
         jogs[idx] = Jog.transform(jogs[idx]);
       }
