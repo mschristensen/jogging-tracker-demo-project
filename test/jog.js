@@ -287,15 +287,186 @@ module.exports = function() {
         done();
       });
   });
+  
+  let jogId;
+  it('should successfully create jog as User One', (done) => {
+    api.post('/jog')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', userOneToken)
+      .send({
+        date: Date.now(),
+        distance: 1,
+        time: 1
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
+        jogId = res.body.payload[0]._id;
+        done();
+      });
+  });
 
-  // create jog User One
-  // update jog
-  // fail to update jog as User Two
-  // fail to delete jog as User Two
-  // delete jog
-  // create jog User One
-  // fail to update jog as User Manager
-  // fail to delete jog as User Manager
-  // update jog as Admin
-  // delete jog as Admin
+  it('should successfully update jog as User One', (done) => {
+    api.put('/jog/' + jogId)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', userOneToken)
+      .send({
+        distance: 2,
+        time: 2
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0].distance).to.equal(2);
+        expect(res.body.payload[0]).to.include.keys('time');
+        expect(res.body.payload[0].time).to.equal(2);
+        done();
+      });
+  });
+
+  it('should fail to update User One jog as User Two', (done) => {
+    api.put('/jog/' + jogId)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', userTwoToken)
+      .send({
+        distance: 2,
+        time: 2
+      })
+      .expect(403)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should fail to delete User One jog as User Two', (done) => {
+    api.delete('/jog/' + jogId)
+      .set('Authorization', userTwoToken)
+      .expect(403)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should successfully delete own jog as User One', (done) => {
+    api.delete('/jog/' + jogId)
+      .set('Authorization', userOneToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should successfully create jog as User One', (done) => {
+    api.post('/jog')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', userOneToken)
+      .send({
+        date: Date.now(),
+        distance: 1,
+        time: 1
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
+        jogId = res.body.payload[0]._id;
+        done();
+      });
+  });
+
+  let userManagerToken;
+  it('should successfully login as UserManager and receive token', (done) => {
+    api.post('/user/authenticate')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({
+        email: 'usermanager@test.com',
+        password: 'password'
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.include.keys('token');
+        userManagerToken = res.body.payload.token;
+        done();
+      });
+  });
+
+  it('should fail to update User One jog as User Manager', (done) => {
+    api.put('/jog/' + jogId)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', userManagerToken)
+      .send({
+        distance: 2,
+        time: 2
+      })
+      .expect(403)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should fail to delete User One jog as User Manager', (done) => {
+    api.delete('/jog/' + jogId)
+      .set('Authorization', userManagerToken)
+      .expect(403)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should successfully update User One jog as Admin', (done) => {
+    api.put('/jog/' + jogId)
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', adminToken)
+      .send({
+        distance: 2,
+        time: 2
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0].distance).to.equal(2);
+        expect(res.body.payload[0]).to.include.keys('time');
+        expect(res.body.payload[0].time).to.equal(2);
+        done();
+      });
+  });
+
+  it('should successfully delete User One jog as Admin', (done) => {
+    api.delete('/jog/' + jogId)
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
 };
