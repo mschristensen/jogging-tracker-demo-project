@@ -21,13 +21,21 @@ module.exports = function(router) {
         // Only Admins can read any user's jogs, given by <user_id>
         // Non-Admins can only query using their own id
         if(req.user.role === User.Roles().Admin) {
-          jogData.user_id = new ObjectId(req.query.user_id);
-        } else if(req.user._id != req.query.user_id) {
+          try {
+            jogData.user_id = new ObjectId(req.query.user_id);
+          } catch(err) {
+            return Response.MongooseError(err).send(res);
+          }
+        } else if(!(Util.compareObjectIds(req.user._id, req.query.user_id))) {
           return Response.Forbidden().send(res);
         }
       } else {
         // Otherwise read authenticated user's own jogs
-        jogData.user_id = new ObjectId(req.user._id);
+        try {
+          jogData.user_id = new ObjectId(req.user._id);
+        } catch(err) {
+          return Response.MongooseError(err).send(res);
+        }
       }
 
       JogController.read(jogData).then(function(response) {
@@ -50,14 +58,22 @@ module.exports = function(router) {
 
       if(req.body.user_id) {
         if(req.user.role === User.Roles().Admin) {
-          // Admins can create on behalf of any user, given by <user_id>
-          jogData.user_id = new ObjectId(req.body.user_id);
+          try {
+            // Admins can create on behalf of any user, given by <user_id>
+            jogData.user_id = new ObjectId(req.body.user_id);
+          } catch(err) {
+            return Response.MongooseError(err).send(res);
+          }
         } else {
           return Response.Forbidden().send(res);
         }
       } else {
         // Otherwise create on behalf of authenticated user
-        jogData.user_id = new ObjectId(req.user._id);
+        try {
+          jogData.user_id = new ObjectId(req.user._id);
+        } catch(err) {
+          return Response.MongooseError(err).send(res);
+        }
       }
 
       JogController.create(jogData).then(function(response) {
@@ -84,7 +100,13 @@ module.exports = function(router) {
         }
 
         let jogData = {};
-        if(req.body.user_id) jogData.user_id = new ObjectId(req.body.user_id);
+        if(req.body.user_id) {
+          try {
+            jogData.user_id = new ObjectId(req.body.user_id);
+          } catch(err) {
+            return Response.MongooseError(err).send(res);
+          }
+        }
         if(req.body.date) jogData.date = req.body.date;
         if(req.body.distance) jogData.distance = req.body.distance;
         if(req.body.time) jogData.time = req.body.time;

@@ -5,19 +5,19 @@ const logger = require('winston');
 const authenticate = require('../middleware/authenticate.js');
 const User = require('../models/user.js');
 const UserController = require('../controllers/user.js');
+const Util = require('../helpers/util.js');
 
 module.exports = function(router) {
   router.route('/')
     .post(function(req, res) {
-      let userData;
+      let userData = {
+        email: req.body.email,
+        password: req.body.password
+      };
       try {
-        userData = {
-          email: req.body.email,
-          password: req.body.password,
-          name: JSON.parse(req.body.name)
-        };
+        userData.name = JSON.parse(req.body.name);
       } catch(err) {
-        return Response.BadRequest({ message: "unable to parse some arguments" }).send(res);
+        return Response.InvalidArguments(['name']).send(res);
       }
       UserController.signup(userData).then(function(response) {
         return response.send(res);
@@ -57,11 +57,11 @@ module.exports = function(router) {
       }, req, res, next);
     }, function(req, res, next) {
       let userData = {};
+      if(req.body.email) userData.email = req.body.email;
       try {
         if(req.body.name) userData.name = JSON.parse(req.body.name);
-        if(req.body.email) userData.email = req.body.email;
       } catch(err) {
-        return Response.BadRequest({ message: "unable to parse some arguments" }).send(res);
+        return Response.InvalidArguments(['name']).send(res);
       }
       UserController.update({ _id: req.user._id }, userData).then(function(response) {
         return response.send(res);
@@ -90,13 +90,17 @@ module.exports = function(router) {
       }, req, res, next);
     }, function(req, res, next) {
       // User role can only update self
-      if(req.user._id != req.params.id && req.user.role === User.Roles().User) {
+      if(!(Util.compareObjectIds(req.user._id, req.params.id)) && req.user.role === User.Roles().User) {
         return Response.Forbidden().send(res);
       }
 
       let userData = {};
-      if(req.body.name) userData.name = JSON.parse(req.body.name);
       if(req.body.email) userData.email = req.body.email;
+      try {
+        if(req.body.name) userData.name = JSON.parse(req.body.name);
+      } catch(err) {
+        return Response.InvalidArguments(['name']).send(res);
+      }
       UserController.update({ _id: req.params.id }, userData).then(function(response) {
         return response.send(res);
       }, function(err) {
@@ -110,7 +114,7 @@ module.exports = function(router) {
       }, req, res, next);
     }, function(req, res, next) {
       // User role can only delete self
-      if(req.user._id != req.params.id && req.user.role === User.Roles().User) {
+      if(!(Util.compareObjectIds(req.user._id, req.params.id)) && req.user.role === User.Roles().User) {
         return Response.Forbidden().send(res);
       }
 

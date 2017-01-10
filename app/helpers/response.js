@@ -128,4 +128,8 @@ module.exports = class Response {
       return Response.InternalServerError();
     }
   }
+
+  static InvalidArguments(args) {
+    return Response.BadRequest({ InvalidArguments: args });
+  }
 };
