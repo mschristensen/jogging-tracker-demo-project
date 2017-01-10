@@ -40,6 +40,7 @@ jogSchema.statics.transform = function(jog) {
   jog = jog || {};
   let schema = {
     _id: null,
+    user_id: null,
     date: null,
     distance: null,
     time: null

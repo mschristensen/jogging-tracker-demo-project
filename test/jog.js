@@ -9,23 +9,6 @@ const expect = require('chai').expect;
 const api = require('supertest')('http://localhost:3000/api');
 
 module.exports = function() {
-  // TODO: as User fail to create jog for another user
-
-  // DONE (login as User One)
-  // DONE fail to create valid jog
-  // DONE fail to create jog without valid token
-  // DONE create jog
-  // DONE read jogs
-  // DONE fail to read jogs without valid token
-  // DONE (login as User Two)
-  // DONE fetch User One _id
-  // DONE fail to read User One's jog
-  // (login as Admin)
-  // create own jog
-  // read own jogs
-  // create jog for User
-  // read User's jogs
-
   let userOneToken;
   it('should successfully create User One and return token', (done) => {
     api.post('/user')
@@ -94,6 +77,11 @@ module.exports = function() {
       .expect(200)
       .end((err, res) => {
         if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
         done();
       });
   });
@@ -117,6 +105,8 @@ module.exports = function() {
       .expect(200)
       .end((err, res) => {
         if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
         expect(res.body.payload[0]).to.include.keys('date');
         expect(res.body.payload[0]).to.include.keys('distance');
         expect(res.body.payload[0]).to.include.keys('time');
@@ -150,6 +140,8 @@ module.exports = function() {
       .expect(200)
       .end((err, res) => {
         if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
         expect(res.body.payload[0]).to.include.keys('date');
         expect(res.body.payload[0]).to.include.keys('distance');
         expect(res.body.payload[0]).to.include.keys('time');
@@ -234,6 +226,11 @@ module.exports = function() {
       .expect(200)
       .end((err, res) => {
         if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
         done();
       });
   });
@@ -251,6 +248,11 @@ module.exports = function() {
       .expect(200)
       .end((err, res) => {
         if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
         done();
       });
   });
@@ -261,6 +263,8 @@ module.exports = function() {
       .expect(200)
       .end((err, res) => {
         if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
         expect(res.body.payload[0]).to.include.keys('date');
         expect(res.body.payload[0]).to.include.keys('distance');
         expect(res.body.payload[0]).to.include.keys('time');
@@ -275,10 +279,23 @@ module.exports = function() {
       .expect(200)
       .end((err, res) => {
         if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
         expect(res.body.payload[0]).to.include.keys('date');
         expect(res.body.payload[0]).to.include.keys('distance');
         expect(res.body.payload[0]).to.include.keys('time');
         done();
       });
   });
+
+  // create jog User One
+  // update jog
+  // fail to update jog as User Two
+  // fail to delete jog as User Two
+  // delete jog
+  // create jog User One
+  // fail to update jog as User Manager
+  // fail to delete jog as User Manager
+  // update jog as Admin
+  // delete jog as Admin
 };

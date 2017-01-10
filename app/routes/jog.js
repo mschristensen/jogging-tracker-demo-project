@@ -66,4 +66,45 @@ module.exports = function(router) {
         return Response.InternalServerError().send(res);
       });
     });
+
+  router.route('/:id')
+    .put(function(req, res, next) {
+      return authenticate({
+        allowedRoles: [User.Roles().User, User.Roles().UserManager, User.Roles().Admin]
+      }, req, res, next);
+    }, function(req, res, next) {
+      // Only Admins can update other user's jogs
+      if(req.user._id != req.params.id && req.user.role !== User.Roles().Admin) {
+        return Response.Forbidden().send(res);
+      }
+
+      let jogData = {};
+      if(req.body.user_id) jogData.user_id = new ObjectId(req.body.user_id);
+      if(req.body.date) jogData.date = req.body.date;
+      if(req.body.distance) jogData.distance = req.body.distance;
+      if(req.body.time) jogData.time = req.body.time;
+      JogController.update({ _id: req.params.id }, jogData).then(function(response) {
+        return response.send(res);
+      }, function(err) {
+        logger.error('error updating specified jog', err);
+        return Response.InternalServerError().send(res);
+      });
+    })
+    .delete(function(req, res, next) {
+      return authenticate({
+        allowedRoles: [User.Roles().User, User.Roles().UserManager, User.Roles().Admin]
+      }, req, res, next);
+    }, function(req, res, next) {
+      // Only Admins can delete other user's jogs
+      if(req.user._id != req.params.id && req.user.role !== User.Roles().Admin) {
+        return Response.Forbidden().send(res);
+      }
+
+      JogController.delete({ _id: req.params.id }).then(function(response) {
+        return response.send(res);
+      }, function(err) {
+        logger.error('error deleting specified jog', err);
+        return Response.InternalServerError().send(res);
+      });
+    });
 };
