@@ -15,10 +15,14 @@ module.exports = function() {
     // Security
     let helmet = require('helmet');
     app.use(helmet());
-
-    app.use(morgan('common'));
+    // Log HTTP requests when in production
+    if(process.env.NODE_ENV === 'production') {
+      app.use(morgan('common'));
+    }
+    // Parse request bodies
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json({ type: '*/*' }));
+    // Auth
     app.use(passport.initialize());
     require('./passport.js')(passport);
 
