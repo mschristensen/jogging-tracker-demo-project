@@ -47,9 +47,13 @@ module.exports = function(router) {
         time: req.body.time
       };
 
-      if(req.user.role === User.Roles().Admin && req.body.user_id) {
-        // Admins can create on behalf of any user, given by <user_id>
-        jogData.user_id = new ObjectId(req.body.user_id);
+      if(req.body.user_id) {
+        if(req.user.role === User.Roles().Admin) {
+          // Admins can create on behalf of any user, given by <user_id>
+          jogData.user_id = new ObjectId(req.body.user_id);
+        } else {
+          return Response.Forbidden().send(res);
+        }
       } else {
         // Otherwise create on behalf of authenticated user
         jogData.user_id = new ObjectId(req.user._id);

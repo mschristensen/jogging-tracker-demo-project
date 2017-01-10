@@ -9,6 +9,8 @@ const expect = require('chai').expect;
 const api = require('supertest')('http://localhost:3000/api');
 
 module.exports = function() {
+  // TODO: as User fail to create jog for another user
+
   // DONE (login as User One)
   // DONE fail to create valid jog
   // DONE fail to create jog without valid token
@@ -20,8 +22,8 @@ module.exports = function() {
   // DONE fail to read User One's jog
   // (login as Admin)
   // create own jog
-  // create jog for User
   // read own jogs
+  // create jog for User
   // read User's jogs
 
   let userOneToken;
@@ -80,7 +82,7 @@ module.exports = function() {
       });
   });
 
-  it('should successfully create jog', (done) => {
+  it('should successfully create jog as User', (done) => {
     api.post('/jog')
       .set('Content-Type', 'application/x-www-form-urlencoded')
       .set('Authorization', userOneToken)
@@ -96,7 +98,7 @@ module.exports = function() {
       });
   });
 
-  it('should fail to read own jogs with invalid token', (done) => {
+  it('should fail to read own jogs as User with invalid token', (done) => {
     // randomly shuffle the token characters (after the 'JWT ' head)
     let shuffledToken = userOneToken.slice(4).split('').sort(function() { return 0.5 - Math.random(); }).join('');
     api.get('/jog')
@@ -109,7 +111,7 @@ module.exports = function() {
       });
   });
 
-  it('should successfully read own jogs', (done) => {
+  it('should successfully read own jogs as User', (done) => {
     api.get('/jog')
       .set('Authorization', userOneToken)
       .expect(200)
@@ -181,6 +183,101 @@ module.exports = function() {
       .end((err, res) => {
         if(err) throw err;
         expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should fail to create jog for User One as User Two', (done) => {
+    api.post('/jog')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', userTwoToken)
+      .send({
+        user_id: userOneId,
+        date: Date.now(),
+        distance: 1,
+        time: 1
+      })
+      .expect(403)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  let adminToken;
+  it('should successfully login as Admin and receive token', (done) => {
+    api.post('/user/authenticate')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .send({
+        email: 'admin@test.com',
+        password: 'password'
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.include.keys('token');
+        adminToken = res.body.payload.token;
+        done();
+      });
+  });
+
+  it('should successfully create jog as Admin', (done) => {
+    api.post('/jog')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', adminToken)
+      .send({
+        date: Date.now(),
+        distance: 1,
+        time: 1
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        done();
+      });
+  });
+
+  it('should successfully create jog for User as Admin', (done) => {
+    api.post('/jog')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', adminToken)
+      .send({
+        user_id: userOneId,
+        date: Date.now(),
+        distance: 2,
+        time: 2
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        done();
+      });
+  });
+
+  it('should successfully read own jogs as Admin', (done) => {
+    api.get('/jog')
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
+        done();
+      });
+  });
+
+  it('should successfully read User jogs as Admin', (done) => {
+    api.get('/jog')
+      .query({ user_id: userOneId })
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
         done();
       });
   });
