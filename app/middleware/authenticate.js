@@ -11,7 +11,7 @@ module.exports = function(opts, req, res, next) {
     User.findOne({
       email: user.email
     }, function(err, user) {
-      if(err) throw err;
+      if(err) return Response.MongooseError(err).send(res);
       if(opts.allowedRoles.indexOf(user.role) === -1) {
         return Response.Forbidden({ allowedRoles: opts.allowedRoles }).send(res);
       }

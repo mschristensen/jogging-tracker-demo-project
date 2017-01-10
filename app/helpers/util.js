@@ -7,30 +7,30 @@ let Util = {};
 Util.compareObjectIds = function(a, b) {
   if(typeof a === 'object') {
     if(!(a instanceof ObjectId)) {
-      throw 'Argument 1 invalid';
+      throw new TypeError('argument 1 must be an ObjectId or a valid ID string');
     }
   } else if(typeof a === 'string') {
     try {
       a = new ObjectId(a);
     } catch(err) {
-      throw 'Argument 1 invalid';
+      throw new TypeError('argument 1 must be an ObjectId or a valid ID string');
     }
   } else {
-    throw 'Argument 1 invalid';
+    throw new TypeError('argument 1 must be an ObjectId or a valid ID string');
   }
 
   if(typeof b === 'object') {
     if(!(b instanceof ObjectId)) {
-      throw 'Argument 2 invalid';
+      throw new TypeError('argument 2 must be an ObjectId or a valid ID string');
     }
   } else if(typeof b === 'string') {
     try {
       b = new ObjectId(b);
     } catch(err) {
-      throw 'Argument 2 invalid';
+      throw new TypeError('argument 2 must be an ObjectId or a valid ID string');
     }
   } else {
-    throw 'Argument 2 invalid';
+    throw new TypeError('argument 2 must be an ObjectId or a valid ID string');
   }
 
   return a.equals(b);

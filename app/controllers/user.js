@@ -20,7 +20,7 @@ UserController.signup = function(data) {
     User.findOne({
       email: data.email
     }, function(err, user) {
-      if(err) throw err;
+      if(err) return resolve(Response.MongooseError(err));
 
       if(user) {
         return resolve(Response.BadRequest({ message: 'user already exists' }));
@@ -43,8 +43,8 @@ UserController.login = function(data) {
     User.findOne({
       email: data.email
     }, function(err, user) {
-      if (err) throw err;
-      if (!user) return resolve(Response.NotFound());
+      if(err) return resolve(Response.MongooseError(err));
+      if(!user) return resolve(Response.NotFound());
 
       user.comparePassword(data.password, function(err, isMatch) {
         if(!isMatch || err) return resolve(Response.Forbidden());
