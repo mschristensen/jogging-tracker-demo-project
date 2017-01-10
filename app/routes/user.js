@@ -55,6 +55,18 @@ module.exports = function(router) {
         logger.error('error updating authenticated user', err);
         return Response.InternalServerError().send(res);
       });
+    })
+    .delete(function(req, res, next) {
+      return authenticate({
+        allowedRoles: [User.Roles().User, User.Roles().UserManager, User.Roles().Admin]
+      }, req, res, next);
+    }, function(req, res, next) {
+      UserController.delete({ _id: req.user._id }).then(function(response) {
+        return response.send(res);
+      }, function(err) {
+        logger.error('error deleting authenticated user', err);
+        return Response.InternalServerError().send(res);
+      });
     });
 
   router.route('/:id')
@@ -75,6 +87,23 @@ module.exports = function(router) {
         return response.send(res);
       }, function(err) {
         logger.error('error updating specified user', err);
+        return Response.InternalServerError().send(res);
+      });
+    })
+    .delete(function(req, res, next) {
+      return authenticate({
+        allowedRoles: [User.Roles().User, User.Roles().UserManager, User.Roles().Admin]
+      }, req, res, next);
+    }, function(req, res, next) {
+      // User role can only delete self
+      if(req.user._id != req.params.id && req.user.role === User.Roles().User) {
+        return Response.Forbidden().send(res);
+      }
+
+      UserController.delete({ _id: req.params.id }).then(function(response) {
+        return response.send(res);
+      }, function(err) {
+        logger.error('error deleting specified user', err);
         return Response.InternalServerError().send(res);
       });
     });

@@ -92,4 +92,13 @@ UserController.update = function(select, data) {
   });
 };
 
+UserController.delete = function(select) {
+  return new Promise(function(resolve, reject) {
+    User.findOneAndRemove(select, function(err) {
+      if(err) return resolve(Response.MongooseError(err));
+      return resolve(Response.OK());
+    });
+  });
+};
+
 module.exports = UserController;
