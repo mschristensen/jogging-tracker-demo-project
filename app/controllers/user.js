@@ -11,7 +11,10 @@ let UserController = {};
 UserController.signup = function(data) {
   return new Promise(function(resolve, reject) {
     if(!data.email || !data.password) {
-      return resolve(Response.BadRequest({ message: 'missing email or password' }));
+      let invalids = [];
+      if(!data.email) invalids.push('email');
+      if(!data.password) invalids.push('password');
+      return resolve(Response.InvalidArguments(invalids));
     }
 
     User.findOne({
@@ -87,7 +90,7 @@ UserController.update = function(select, data) {
 
 UserController.delete = function(select) {
   return new Promise(function(resolve, reject) {
-    if(!select._id) return resolve(Response.BadRequest({ message: 'must supply the user id parameter' }));
+    if(!select._id) return resolve(Response.InvalidArguments(['id']));
 
     User.findOneAndRemove(select, function(err, user) {
       if(err) return resolve(Response.MongooseError(err));
