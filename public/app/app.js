@@ -36,9 +36,9 @@ app.constant('AUTH_EVENTS', {
 });
 
 // configure the router
-app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES) {
   $locationProvider.html5Mode(true);
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/jogs');
 
   // remove trailing slashes from URL
   $urlRouterProvider.rule(($injector, $location) => {
@@ -63,10 +63,39 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', functio
     })
     .state('auth.signup', {
       url: '/signup'
+    })
+    .state('home', {
+      abstract: true,
+      templateUrl: '/app/pages/home/home.view.html',
+      controller: 'homeController'
+    })
+    .state('home.jogs', {
+      url: '/jogs',
+      data: {
+        authorizedRoles: [USER_ROLES.User, USER_ROLES.UserManager, USER_ROLES.Admin]
+      }
     });
 }]);
 
-app.run(['$rootScope', '$state', function($rootScope, $state) {
+app.run(['$rootScope', '$state', 'AuthFactory', 'AUTH_EVENTS', function($rootScope, $state, AuthFactory, AUTH_EVENTS) {
+  $rootScope.$on('$stateChangeStart', function(event, next) {
+    if(next.data && next.data.authorizedRoles) {
+      if(!AuthFactory.isAuthorized(next.data.authorizedRoles)) {
+        event.preventDefault();
+        if(AuthFactory.isAuthenticated()) {
+          // user is not allowed
+          $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+        } else {
+          // user is not logged in
+          $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+        }
+      }
+    }
+  });
+
+  $rootScope.$on(AUTH_EVENTS.notAuthenticated, function() {
+    $state.go('auth.login');
+  });
 }]);
 
 app.controller('rootController', ['$scope', '$state', function($scope, $state) {

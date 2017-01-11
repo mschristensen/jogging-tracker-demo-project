@@ -18,6 +18,7 @@ app.controller('authController', ['$scope', '$rootScope', '$state', 'AuthFactory
   $scope.login = function(credentials) {
     AuthFactory.login(credentials).then(function() {
       $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+      $state.go('home.jogs');
     }, function(response) {
       $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
     });

@@ -17,10 +17,10 @@ app.factory('AuthFactory', ['$http', 'CacheFactory', 'ApiFactory', function($htt
   }
 
   authFactory.getUser = function() {
-    let user = authCache.get('user');
-    if(user) {
+    let cache = authCache.get('user');
+    if(cache) {
       if(!authCache.info('user').isExpired) {
-        return user;
+        return cache.user;
       } else {
         return null;
       }
@@ -32,7 +32,8 @@ app.factory('AuthFactory', ['$http', 'CacheFactory', 'ApiFactory', function($htt
     return new Promise(function(resolve, reject) {
       ApiFactory.request('POST', '/user/authenticate', credentials).then(function(response) {
         authCache.put('user', {
-          token: response.payload.token
+          token: response.payload.token,
+          user: response.payload.user
         });
         return resolve();
       }, reject);
@@ -49,6 +50,6 @@ app.factory('AuthFactory', ['$http', 'CacheFactory', 'ApiFactory', function($htt
     }
     return (authFactory.isAuthenticated() && authorizedRoles.indexOf(authFactory.getUser().role) !== -1);
   };
-  
+
   return authFactory;
 }]);
