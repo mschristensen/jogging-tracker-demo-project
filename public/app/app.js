@@ -1,9 +1,12 @@
 "use strict";
 
-var app = angular.module('myApp', ['ui.router']);
+var app = angular.module('app', ['ui.router']);
 
 // configure the router
-app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider) {
+  $locationProvider.html5Mode(true);
+  $urlRouterProvider.otherwise('/');
+
   // remove trailing slashes from URL
   $urlRouterProvider.rule(($injector, $location) => {
     let path = $location.path();
@@ -14,6 +17,20 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
       return newPath;
     }
   });
+
+  $stateProvider
+    // Log In/Sign Up state
+    .state('auth', {
+      abstract: true,
+      templateUrl: '/app/pages/auth/auth.view.html',
+      controller: 'authController'
+    })
+    .state('auth.login', {
+      url: '/login'
+    })
+    .state('auth.signup', {
+      url: '/signup'
+    });
 }]);
 
 app.run(['$rootScope', '$state', function($rootScope, $state) {

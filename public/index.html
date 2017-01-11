@@ -14,17 +14,14 @@
     <!-- App styles -->
     <link rel="stylesheet" href="app.css" />
   </head>
-  <body ng-app="myApp" ng-controller="rootController">
-    <h1>Development Mode</h1>
-    <h1>{{ app_test }}</h1>
-    <test-directive></test-directive>
+  <body ng-app="app" ng-controller="rootController">
+    <div ui-view></div>
 
     <!-- DEPENDENCIES -->
     <script src="dependencies.js"></script>
 
     <!-- ROOT -->
     <script src="app/app.js"></script>
-    <script src="app/components/test/test.controller.js"></script>
-    <script src="app/components/test/test.directive.js"></script>
+    <script src="app/pages/auth/auth.controller.js"></script>
   </body>
 </html>

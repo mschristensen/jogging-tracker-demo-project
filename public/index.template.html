@@ -19,15 +19,8 @@
     <!-- App styles -->
     <link rel="stylesheet" href="app.css" />
   </head>
-  <body ng-app="myApp" ng-controller="rootController">
-    <!-- @if ENV='development' -->
-    <h1>Development Mode</h1>
-    <!-- @endif -->
-    <!-- @if ENV='production' -->
-    <h2>Production Mode</h2>
-    <!-- @endif -->
-    <h1>{{ app_test }}</h1>
-    <test-directive></test-directive>
+  <body ng-app="app" ng-controller="rootController">
+    <div ui-view></div>
 
     <!-- DEPENDENCIES -->
     <script src="dependencies.js"></script>
@@ -35,8 +28,7 @@
     <!-- ROOT -->
     <!-- @if ENV='development' -->
     <script src="app/app.js"></script>
-    <script src="app/components/test/test.controller.js"></script>
-    <script src="app/components/test/test.directive.js"></script>
+    <script src="app/pages/auth/auth.controller.js"></script>
     <!-- @endif -->
     <!-- @if ENV='production' -->
     <script src="bundle.min.js"></script>

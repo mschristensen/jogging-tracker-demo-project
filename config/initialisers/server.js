@@ -32,6 +32,11 @@ module.exports = function() {
     // Serve up the web app
     app.use('/', express.static(__dirname + '/../../public'));
 
+    // Send the index.html for other files to support HTML5Mode
+    app.all('/*', function(req, res, next) {
+      res.sendFile('index.html', { root: __dirname + '/../../public' });
+    });
+
     // Error handler
     app.use(function(err, req, res, next) {
       res.status(err.status || 500);
