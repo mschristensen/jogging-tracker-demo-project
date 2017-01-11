@@ -22,6 +22,14 @@ module.exports = function() {
       .end((err, res) => {
         if(err) throw err;
         expect(res.body.payload).to.include.keys('token');
+        expect(res.body.payload).to.include.keys('user');
+        expect(res.body.payload.user).to.include.keys('name');
+        expect(res.body.payload.user.name).to.include.keys('first');
+        expect(res.body.payload.user.name).to.include.keys('last');
+        expect(res.body.payload.user).to.include.keys('email');
+        expect(res.body.payload.user).to.include.keys('role');
+        expect(res.body.payload.user).to.include.keys('_id');
+        expect(res.body.payload.user).to.not.include.keys('password');
         userOneToken = res.body.payload.token;
         done();
       });
@@ -162,6 +170,14 @@ module.exports = function() {
       .end((err, res) => {
         if(err) throw err;
         expect(res.body.payload).to.include.keys('token');
+        expect(res.body.payload).to.include.keys('user');
+        expect(res.body.payload.user).to.include.keys('name');
+        expect(res.body.payload.user.name).to.include.keys('first');
+        expect(res.body.payload.user.name).to.include.keys('last');
+        expect(res.body.payload.user).to.include.keys('email');
+        expect(res.body.payload.user).to.include.keys('role');
+        expect(res.body.payload.user).to.include.keys('_id');
+        expect(res.body.payload.user).to.not.include.keys('password');
         userTwoToken = res.body.payload.token;
         done();
       });
@@ -209,6 +225,14 @@ module.exports = function() {
       .end((err, res) => {
         if(err) throw err;
         expect(res.body.payload).to.include.keys('token');
+        expect(res.body.payload).to.include.keys('user');
+        expect(res.body.payload.user).to.include.keys('name');
+        expect(res.body.payload.user.name).to.include.keys('first');
+        expect(res.body.payload.user.name).to.include.keys('last');
+        expect(res.body.payload.user).to.include.keys('email');
+        expect(res.body.payload.user).to.include.keys('role');
+        expect(res.body.payload.user).to.include.keys('_id');
+        expect(res.body.payload.user).to.not.include.keys('password');
         adminToken = res.body.payload.token;
         done();
       });
@@ -405,6 +429,14 @@ module.exports = function() {
       .end((err, res) => {
         if(err) throw err;
         expect(res.body.payload).to.include.keys('token');
+        expect(res.body.payload).to.include.keys('user');
+        expect(res.body.payload.user).to.include.keys('name');
+        expect(res.body.payload.user.name).to.include.keys('first');
+        expect(res.body.payload.user.name).to.include.keys('last');
+        expect(res.body.payload.user).to.include.keys('email');
+        expect(res.body.payload.user).to.include.keys('role');
+        expect(res.body.payload.user).to.include.keys('_id');
+        expect(res.body.payload.user).to.not.include.keys('password');
         userManagerToken = res.body.payload.token;
         done();
       });

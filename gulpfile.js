@@ -28,7 +28,9 @@ gulp.task('html', function() {
 });
 
 gulp.task('dependencies', function() {
-  gulp.src(['./node_modules/angular/angular.min.js', './node_modules/angular-ui-router/release/angular-ui-router.min.js'])
+  gulp.src(['./node_modules/angular/angular.min.js',
+            './node_modules/angular-ui-router/release/angular-ui-router.min.js',
+            './node_modules/angular-cache/dist/angular-cache.min.js'])
     .pipe(concat('dependencies.js'))
     .pipe(gulp.dest('./public'));
 });

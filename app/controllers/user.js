@@ -49,9 +49,13 @@ UserController.login = function(data) {
       user.comparePassword(data.password, function(err, isMatch) {
         if(!isMatch || err) return resolve(Response.Forbidden());
         let token = jwt.sign(user, process.env.SECRET, {
-          expiresIn: 86400  // 24 hours
+          expiresIn: 60 * 60 * 12  // 12 hours
         });
-        return resolve(Response.OK({ token: 'JWT ' + token }));
+        user = User.transform(user);
+        return resolve(Response.OK({
+          token: 'JWT ' + token,
+          user: user
+        }));
       });
     });
   });
