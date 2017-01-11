@@ -1,9 +1,16 @@
 <div id="auth-view" class="full-page">
-  <h1>Login to JoggingTracker</h1>
-  <img src="/assets/images/logo.png">
+
   <form>
-    <input type="email" placeholder="Email"></input>
-    <input type="password" placeholder="Password"></input>
-    <input type="submit" value="LOGIN">
+    <h1>{{ isLoginForm() ? 'Login to' : 'Sign up for' }} Jogging Tracker</h1>
+    <img src="/assets/images/logo.png">
+    <div id="inputs">
+      <input type="text" placeholder="First name" ng-show="!isLoginForm()" ng-required="!isLoginForm()"></input>
+      <input type="text" placeholder="Last name" ng-show="!isLoginForm()" ng-required="!isLoginForm()"></input>
+      <input type="email" placeholder="Email" required></input>
+      <input type="password" placeholder="Password" required></input>
+      <input type="submit" value="{{ isLoginForm() ? 'LOGIN' : 'SIGN UP' }}">
+    </div>
   </form>
+  <p ng-show="isLoginForm()">Don't have an account? <a ui-sref="auth.signup">Sign Up</a>.</p>
+  <p ng-show="!isLoginForm()">Already have an account? <a ui-sref="auth.login">Login</a>.</p>
 </div>

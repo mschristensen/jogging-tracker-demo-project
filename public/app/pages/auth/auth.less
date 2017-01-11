@@ -1,59 +1,84 @@
 #auth-view {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  overflow: scroll;
   background-color: @primary;
   text-align: center;
 
-  h1 {
-    color: @text-light;
-    font-size: 1.5em;
-    font-weight: 300;
-    text-transform: uppercase;
-    letter-spacing: 5px;
-    margin-top: -200px;
-  }
-
-  img {
-    width: 50px;
-    max-width: 50%;
-    height: auto;
-    margin: 40px 0;
-  }
-
   form {
-    input {
-      display: block;
-      width: 250px;
-      max-width: calc(~'100% - 20px');
-      margin: 20px auto;
-      font-family: 'Open Sans', sans-serif;
-      font-size: 1.1em;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-      transition: box-shadow 0.2s linear;
-      &:focus, &:hover {
-        cursor: pointer;
-        outline: none;
-        box-shadow: @shadow3;
-        transition: box-shadow 0.2s linear;
+    h1 {
+      margin-top: 60px;
+      font-size: 1.5em;
+      font-weight: 300;
+      color: @text-light;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+
+      @media screen and (max-width: 800px) {
+        font-size: 1em;
+        margin-top: 20px;
       }
+    }
 
-      &[type='submit'] {
-        background-color: @accent;
-        color: @text-light;
-        font-weight: 500;
-        letter-spacing: 2px;
+    img {
+      width: 50px;
+      max-width: 50%;
+      height: auto;
+      margin: 40px 0;
 
-        transition: letter-spacing 0.2s linear;
+      @media screen and (max-width: 800px) {
+        margin: 15px 0;
+      }
+    }
+
+    div#inputs {
+      max-width: 350px;
+      width: calc(~'100% - 100px');
+      margin: auto;
+
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        color: @text-dark;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 1.1em;
+        margin: 10px 0;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 3px;
+
+        transition: box-shadow 0.2s linear;
         &:focus, &:hover {
-          letter-spacing: 5px;
+          cursor: pointer;
+          outline: none;
+          box-shadow: @shadow3;
+          transition: box-shadow 0.2s linear;
+        }
+
+        &[type='submit'] {
+          background-color: @accent;
+          font-weight: 500;
+          letter-spacing: 2px;
+          color: @text-light;
+
           transition: letter-spacing 0.2s linear;
+          &:focus, &:hover {
+            letter-spacing: 5px;
+            transition: letter-spacing 0.2s linear;
+          }
         }
       }
+    }
+  }
+
+  p {
+    font-weight: 300;
+    color: @text-light;
+    a {
+      text-decoration: underline;
     }
   }
 }
