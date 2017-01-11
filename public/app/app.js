@@ -2,8 +2,6 @@
 
 var app = angular.module('app', ['ui.router', 'angular-cache']);
 
-app.constant('API_URL', 'http://localhost:3000/api');
-
 app.constant('HTTP_RESPONSES', {
   NoResponse: -1,
   OK: 200,

@@ -3,12 +3,10 @@
 const gulp = require('gulp');
 const gutil = require('gulp-util');
 const gulpstream = require('vinyl-source-stream');
-const nodemon = require('gulp-nodemon');
 const rename = require("gulp-rename");
 const args = require('yargs').argv;
 const gulpif = require('gulp-if');
 const preprocess = require('gulp-preprocess');
-const watch = require('gulp-watch');
 const runSequence = require('run-sequence');
 const jshint = require('gulp-jshint');
 const concat = require('gulp-concat');
@@ -17,6 +15,8 @@ const uglify = require('gulp-uglify');
 const uglifycss = require('gulp-uglifycss');
 const mocha = require('gulp-mocha');
 const wait = require('gulp-wait');
+const gulpNgConfig = require('gulp-ng-config');
+const babel = require('gulp-babel');
 
 let environment = args.env || process.env.NODE_ENV;
 
@@ -54,6 +54,9 @@ gulp.task('lint', function() {
 gulp.task('scripts', function() {
   gulp.src(['./public/app/**/*.js'])
     .pipe(concat('bundle.min.js'))
+    .pipe(babel({
+        presets: ['es2015']
+    }))
     .pipe(uglify())
     .pipe(gulp.dest('./public'));
 });
@@ -77,26 +80,21 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('./public'));
 });
 
-gulp.task('build', ['html', 'dependencies', 'styles', 'lint'], function(done) {
+gulp.task('angular-config', function () {
+  gulp.src('./angular.config.json')
+    .pipe(gulpNgConfig('app', {
+      environment: environment || 'development',
+      createModule: false
+    }))
+    .pipe(gulp.dest('./public/app/config'));
+});
+
+gulp.task('build', ['html', 'angular-config', 'dependencies', 'styles', 'lint'], function(done) {
   if(environment === 'production') {
     runSequence('scripts', done);
   } else {
     done();
   }
-});
-
-gulp.task('watch', function(done) {
-  return runSequence('build', function() {
-    gulp.watch(['./public/app/**/*.js', './public/app/**/*.less'], ['build']);
-    done();
-  });
-});
-
-gulp.task('serve', ['watch'], function() {
-  nodemon({
-    script: 'index.js',
-    delay: 2500
-  });
 });
 
 gulp.task('test', function(done) {
