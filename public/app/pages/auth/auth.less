@@ -1,0 +1,59 @@
+#auth-view {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: @primary;
+  text-align: center;
+
+  h1 {
+    color: @text-light;
+    font-size: 1.5em;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    margin-top: -200px;
+  }
+
+  img {
+    width: 50px;
+    max-width: 50%;
+    height: auto;
+    margin: 40px 0;
+  }
+
+  form {
+    input {
+      display: block;
+      width: 250px;
+      max-width: calc(~'100% - 20px');
+      margin: 20px auto;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1.1em;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 3px;
+
+      transition: box-shadow 0.2s linear;
+      &:focus, &:hover {
+        cursor: pointer;
+        outline: none;
+        box-shadow: @shadow3;
+        transition: box-shadow 0.2s linear;
+      }
+
+      &[type='submit'] {
+        background-color: @accent;
+        color: @text-light;
+        font-weight: 500;
+        letter-spacing: 2px;
+
+        transition: letter-spacing 0.2s linear;
+        &:focus, &:hover {
+          letter-spacing: 5px;
+          transition: letter-spacing 0.2s linear;
+        }
+      }
+    }
+  }
+}
