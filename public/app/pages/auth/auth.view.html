@@ -1,8 +1,9 @@
 <div id="auth-view" class="full-page">
 
-  <form name="authForm" ng-submit="login(credentials)">
+  <form name="authForm" ng-submit="isLoginForm() ? login(credentials) : signup(credentials)">
     <h1>{{ isLoginForm() ? 'Login to' : 'Sign up for' }} Jogging Tracker</h1>
     <img src="/assets/images/logo.png">
+    <p>{{ getErrorMessage() }}</p>
     <div id="inputs">
       <input ng-model="credentials.name.first" type="text" placeholder="First name" ng-show="!isLoginForm()" ng-required="!isLoginForm()"></input>
       <input ng-model="credentials.name.last" type="text" placeholder="Last name" ng-show="!isLoginForm()" ng-required="!isLoginForm()"></input>

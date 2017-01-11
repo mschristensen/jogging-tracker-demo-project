@@ -40,6 +40,20 @@ app.factory('AuthFactory', ['$http', 'CacheFactory', 'ApiFactory', function($htt
     });
   };
 
+  authFactory.signup = function(credentials) {
+    let data = angular.copy(credentials);
+    data.name = JSON.stringify(credentials.name);
+    return new Promise(function(resolve, reject) {
+      ApiFactory.request('POST', '/user', data).then(function(response) {
+        authCache.put('user', {
+          token: response.payload.token,
+          user: response.payload.user
+        });
+        return resolve();
+      }, reject);
+    });
+  };
+
   authFactory.isAuthenticated = function() {
     return !!authFactory.getUser()._id;
   };
