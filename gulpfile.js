@@ -17,6 +17,7 @@ const mocha = require('gulp-mocha');
 const wait = require('gulp-wait');
 const gulpNgConfig = require('gulp-ng-config');
 const babel = require('gulp-babel');
+const exec = require('child_process').exec;
 
 let environment = args.env || process.env.NODE_ENV;
 
@@ -97,16 +98,26 @@ gulp.task('build', ['html', 'angular-config', 'dependencies', 'styles', 'lint'],
   }
 });
 
+gulp.task('start', function(done) {
+  exec('npm start', function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    done(err);
+  });
+});
+
+gulp.task('run-tests', function(done) {
+  gulp.src('test/test.js', { read: false })
+    // pause while server starts up
+    .pipe(wait(3000))
+    // gulp-mocha needs filepaths so you can't have any plugins before it
+    .pipe(mocha())
+    .once('end', () => {
+      done();
+    });
+});
+
 gulp.task('test', function(done) {
   environment = 'development';
-  return runSequence('serve', function() {
-    gulp.src('test/test.js', { read: false })
-      // pause while server starts up
-      .pipe(wait(3000))
-      // gulp-mocha needs filepaths so you can't have any plugins before it
-      .pipe(mocha())
-      .once('end', () => {
-        done();
-      });
-  });
+  return runSequence('build', ['start', 'run-tests']);
 });
