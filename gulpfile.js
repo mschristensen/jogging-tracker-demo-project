@@ -31,13 +31,14 @@ gulp.task('html', function() {
 gulp.task('dependencies', function() {
   gulp.src(['./node_modules/angular/angular.min.js',
             './node_modules/angular-ui-router/release/angular-ui-router.min.js',
-            './node_modules/angular-cache/dist/angular-cache.min.js'])
+            './node_modules/angular-cache/dist/angular-cache.min.js',
+            './node_modules/angular-mocks/angular-mocks.js'])
     .pipe(concat('dependencies.js'))
     .pipe(gulp.dest('./public'));
 });
 
 gulp.task('lint', function() {
-  gulp.src(['./public/app/**/*.js', '*.js', './utils/**/*.js', './test/**/*.js', './config/**/*.js', './app/**/*.js'])
+  gulp.src(['./public/app/**/*.js', '!./public/app/**/*.spec.js', '*.js', './utils/**/*.js', './test/**/*.js', './config/**/*.js', './app/**/*.js'])
     .pipe(jshint({
       node: true,
       // list of global variables and whether they are assignable
