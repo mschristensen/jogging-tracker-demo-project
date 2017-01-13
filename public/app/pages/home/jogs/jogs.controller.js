@@ -54,6 +54,29 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     });
   };
 
+  $scope.deleteJog = function(jog) {
+    JogFactory.deleteJog(jog._id).then(function() {
+      showToast('Woohoo! Your jog was deleted.');
+      // update jogs
+      getJogs();
+    }, function(response) {
+      switch(response.status) {
+        case HTTP_RESPONSES.Forbidden:
+          // TODO logout and redirect to login page
+          break;
+        case HTTP_RESPONSES.NotFound:
+        case HTTP_RESPONSES.BadRequest:
+        case HTTP_RESPONSES.InternalServerError:
+          showToast('Something went wrong there. This is embarassing.');
+          console.error('Response:', response);
+          break;
+        default:
+          console.error('Unknown status code in response:', response);
+          break;
+      }
+    });
+  };
+
   function getJogs() {
     JogFactory.getJogs().then(function(jogs) {
       $timeout(function() {

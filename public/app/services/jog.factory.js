@@ -20,5 +20,13 @@ app.factory('JogFactory', ['ApiFactory', function(ApiFactory) {
     });
   };
 
+  jogFactory.deleteJog = function(id) {
+    return new Promise(function(resolve, reject) {
+      ApiFactory.request('DELETE', '/jog/' + id).then(function(response) {
+        return resolve();
+      }, reject);
+    });
+  };
+
   return jogFactory;
 }]);
