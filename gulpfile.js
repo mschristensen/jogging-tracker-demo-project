@@ -54,7 +54,7 @@ gulp.task('lint', function() {
 });
 
 gulp.task('scripts', function() {
-  gulp.src(['./public/app/**/*.js'])
+  gulp.src(['./public/app/**/*.js', '!./public/app/**/*.spec.js'])
     .pipe(concat('bundle.min.js'))
     .pipe(babel({
         presets: ['es2015']
