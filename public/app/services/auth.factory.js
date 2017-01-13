@@ -55,7 +55,7 @@ app.factory('AuthFactory', ['$http', 'CacheFactory', 'ApiFactory', function($htt
   };
 
   authFactory.isAuthenticated = function() {
-    return !!authFactory.getUser()._id;
+    return authFactory.getUser() ? !!authFactory.getUser()._id : false;
   };
 
   authFactory.isAuthorized = function(authorizedRoles) {
