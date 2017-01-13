@@ -23,5 +23,20 @@
 #content-panel {
   width: 100%;
   height: calc(~'100% - 80px');
+  box-sizing: border-box;
+  padding: 0 20px;
   background-color: #fff;
+
+  .table {
+    font-size: 0.8em;
+
+    h3 {
+      font-size: 1em;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    .table-cell {
+      border-bottom: 1px solid @grey;
+    }
+  }
 }

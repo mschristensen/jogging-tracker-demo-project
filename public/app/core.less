@@ -15,6 +15,27 @@
 @shadow4: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 @shadow5: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
 
+// FLEX TABLE STYLES
+// https://css-tricks.com/accessible-simple-responsive-tables/
+.table {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0; //0 0 3em 0;
+  padding: 0;
+}
+.table-cell {
+  box-sizing: border-box;
+  flex-grow: 1;
+  width: 100%;  // Default to full width
+  padding: 0.8em 1.2em;
+  overflow: hidden; // Or flex might break
+  list-style: none;
+}
+.table--2cols > .table-cell  { width: 50%; }
+.table--3cols > .table-cell  { width: 33.33%; }
+.table--4cols > .table-cell  { width: 25%; }
+.table--5cols > .table-cell  { width: 20%; }
+.table--6cols > .table-cell  { width: 16.6%; }
 
 // RESETS
 html, body {

@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular.module('app');
-app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', function($scope, JogFactory, HTTP_RESPONSES) {
+app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$timeout', function($scope, JogFactory, HTTP_RESPONSES, $timeout) {
   let oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   $scope.date = {
@@ -9,8 +9,15 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', func
     to: new Date()
   };
 
+  $scope.jogs = [];
+  $scope.getJogs = function() {
+    return $scope.jogs;
+  };
+
   JogFactory.getJogs().then(function(jogs) {
-    console.log("JOGS:", jogs);
+    $timeout(function() {
+      $scope.jogs = jogs;
+    });
   }, function(response) {
     switch(response.status) {
       case HTTP_RESPONSES.NotFound:
