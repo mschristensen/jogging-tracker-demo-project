@@ -113,5 +113,4 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
   }
 
   getJogs();
-  showToast("askdnaskjd akshd as dkjh ");
 }]);
