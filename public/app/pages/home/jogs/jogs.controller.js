@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular.module('app');
-app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$timeout', function($scope, JogFactory, HTTP_RESPONSES, $timeout) {
+app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$timeout', '$mdToast', function($scope, JogFactory, HTTP_RESPONSES, $timeout, $mdToast) {
   let oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   $scope.date = {
@@ -26,23 +26,69 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     return speed.toFixed(2);
   };
 
-  JogFactory.getJogs().then(function(jogs) {
-    $timeout(function() {
-      $scope.jogs = jogs;
+  $scope.createJog = function(jog) {
+    JogFactory.createJog(jog).then(function() {
+      showToast('Woohoo! Your jog was added.');
+      // update jogs
+      getJogs();
+    }, function(response) {
+      switch(response.status) {
+        case HTTP_RESPONSES.BadRequest:
+          if(response.payload.InvalidArguments && response.payload.InvalidArguments.length > 0) {
+            showToast('Invalid ' + response.payload.InvalidArguments[0] + ' parameter!');
+          } else {
+            showToast('Some of the parameters you provided are invalid.');
+          }
+          break;
+        case HTTP_RESPONSES.Forbidden:
+          // TODO logout and redirect to login page
+          break;
+        case HTTP_RESPONSES.InternalServerError:
+          showToast('Something went wrong there. This is embarassing.');
+          console.error('Response:', response);
+          break;
+        default:
+          console.error('Unknown status code in response:', response);
+          break;
+      }
     });
-  }, function(response) {
-    switch(response.status) {
-      case HTTP_RESPONSES.NotFound:
-        break;
-      case HTTP_RESPONSES.BadRequest:
-        break;
-      case HTTP_RESPONSES.Forbidden:
-        break;
-      case HTTP_RESPONSES.InternalServerError:
-        break;
-      default:
-        // TODO: handle unknown status code
-        break;
-    }
-  });
+  };
+
+  function getJogs() {
+    JogFactory.getJogs().then(function(jogs) {
+      $timeout(function() {
+        $scope.jogs = jogs;
+      });
+    }, function(response) {
+      switch(response.status) {
+        case HTTP_RESPONSES.NotFound:
+          showToast('No jogs yet. Pro tip: add one now!');
+          break;
+        case HTTP_RESPONSES.Forbidden:
+          // TODO logout and redirect to login page
+          break;
+        case HTTP_RESPONSES.BadRequest:
+        case HTTP_RESPONSES.InternalServerError:
+          showToast('Something went wrong there. This is embarassing.');
+          console.error('Response:', response);
+          break;
+        default:
+          console.error('Unknown status code in response:', response);
+          break;
+      }
+    });
+  }
+
+  function showToast(msg) {
+    $mdToast.show(
+      $mdToast.simple()
+        .textContent(msg)
+        .position('top right')
+        .action('ok')
+        .hideDelay(5000)
+    );
+  }
+
+  getJogs();
+  showToast("askdnaskjd akshd as dkjh ");
 }]);

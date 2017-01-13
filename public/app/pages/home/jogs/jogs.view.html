@@ -20,7 +20,7 @@
           <input name="time" ng-model="newJog.time" required>
         </div>
         <div class="table-cell create-jog not-md">{{ computeAverageSpeed(newJog) }}</div>
-        <div class="table-cell create-jog"><md-button class="md-raised md-accent">Create Jog</md-button></div>
+        <div class="table-cell create-jog"><md-button class="md-raised md-accent" ng-click="createJog(newJog)">Create Jog</md-button></div>
 
         <div class="table-cell"><h3>Date</h3></div>
         <div class="table-cell"><h3>Distance</h3></div>

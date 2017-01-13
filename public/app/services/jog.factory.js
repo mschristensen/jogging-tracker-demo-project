@@ -12,5 +12,13 @@ app.factory('JogFactory', ['ApiFactory', function(ApiFactory) {
     });
   };
 
+  jogFactory.createJog = function(jog) {
+    return new Promise(function(resolve, reject) {
+      ApiFactory.request('POST', '/jog', jog).then(function(response) {
+        return resolve(response.payload);
+      }, reject);
+    });
+  };
+
   return jogFactory;
 }]);
