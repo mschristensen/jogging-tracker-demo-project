@@ -1,5 +1,15 @@
 <div id="home-view" class="full-page">
-  <div id="side-menu" ng-class="{ 'closed': !isNavOpen() }"></div>
+  <nav ng-class="{ 'closed': !isNavOpen() }">
+    <header>
+      <img src="assets/images/logo.png">
+      <p>Mike Christensen</p>
+    </header>
+    <ul>
+      <a><li>My Jogs</li></a>
+      <a><li>Reports</li></a>
+      <a><li>Manage Users</li></a>
+    </ul>
+  </nav>
   <div id="page-container">
     <header>
       <img ng-src="assets/icons/{{ isNavOpen() ? 'back' : 'menu' }}.png" ng-click="toggleNavOpen()">
