@@ -80,12 +80,14 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
   function getJogs() {
     JogFactory.getJogs().then(function(jogs) {
       $timeout(function() {
-        $scope.jogs = jogs;
+        $scope.jogs = jogs || [];
       });
     }, function(response) {
       switch(response.status) {
         case HTTP_RESPONSES.NotFound:
-          showToast('No jogs yet. Pro tip: add one now!');
+          $timeout(function() {
+            $scope.jogs = [];
+          });
           break;
         case HTTP_RESPONSES.Forbidden:
           // TODO logout and redirect to login page
