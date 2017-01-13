@@ -13,7 +13,8 @@
   <div id="page-container">
     <header>
       <img ng-src="assets/icons/{{ isNavOpen() ? 'back' : 'menu' }}.png" ng-click="toggleNavOpen()">
-      <h1>My Jogs</h1>
+      <h1>{{ getPageTitle() }}</h1>
     </header>
+    <div ui-view></div>
   </div>
 </div>

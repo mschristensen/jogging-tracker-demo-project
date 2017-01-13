@@ -71,6 +71,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
     })
     .state('home.jogs', {
       url: '/jogs',
+      templateUrl: '/app/pages/home/jogs/jogs.view.html',
+      controller: 'jogsController',
       data: {
         authorizedRoles: [USER_ROLES.User, USER_ROLES.UserManager, USER_ROLES.Admin]
       }

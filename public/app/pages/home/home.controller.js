@@ -15,4 +15,17 @@ app.controller('homeController', ['$scope', '$state', function($scope, $state) {
   $scope.getState = function() {
     return $state.current.name;
   };
+
+  $scope.getPageTitle = function() {
+    switch($state.current.name) {
+      case 'home.jogs':
+        return 'My Jogs';
+      case 'home.reports':
+        return 'Reports';
+      case 'home.manage-users':
+        return 'Manage Users';
+      default:
+        return '';
+    }
+  };
 }]);
