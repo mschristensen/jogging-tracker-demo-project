@@ -37,6 +37,24 @@
     }
     .table-cell {
       border-bottom: 1px solid @grey;
+
+
+      &.create-jog {
+        display: flex;
+        align-items: center;
+
+        input.not-md {
+          background-color: transparent;
+          border: none;
+          border-bottom: solid 2px @grey;
+          padding: 3px;
+
+          &:focus {
+            outline: none;
+            border-bottom: solid 2px @primary;
+          }
+        }
+      }
     }
   }
 }

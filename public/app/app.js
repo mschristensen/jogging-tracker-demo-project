@@ -36,10 +36,12 @@ app.constant('AUTH_EVENTS', {
 });
 
 // configure the router
-app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', '$compileProvider', '$mdDateLocaleProvider', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES, $compileProvider, $mdDateLocaleProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', '$compileProvider', '$mdDateLocaleProvider', '$mdThemingProvider', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES, $compileProvider, $mdDateLocaleProvider, $mdThemingProvider) {
+  // MATERIAL UI CONFIG
   // Prevent Angular 1.6 optimisations which break some Angular Material components
   $compileProvider.preAssignBindingsEnabled(true);
 
+  // Default date format dd/mm/yyyy
   $mdDateLocaleProvider.formatDate = function(date) {
     let day = date.getDate();
     let monthIndex = date.getMonth();
@@ -47,6 +49,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
     return day + '/' + (monthIndex + 1) + '/' + year;
   };
 
+  // Parse date of format dd/mm/yyyy
   $mdDateLocaleProvider.parseDate = function(dateString) {
     let parts = dateString.split('/');
     if(parts.length !== 3) return new Date(NaN);
@@ -56,6 +59,31 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
       return new Date(NaN);
     }
   };
+
+  // Custom theme
+  $mdThemingProvider.definePalette('customPalette', {
+    '50': 'e4e7ea',
+    '100': 'c0c6cd',
+    '200': '9aa4af',
+    '300': '707f8e',
+    '400': '526476',
+    '500': '34495e',
+    '600': '2f4255',
+    '700': '2a3b4c',
+    '800': '243342',
+    '900': '1b2631',
+    'A100': 'C5CAE9',
+    'A200': '9FA8DA',
+    'A400': '7986CB',
+    'A700': '5C6BC0',
+    'contrastDefaultColor': 'light',    // whether, by default, text (contrast)
+                                        // on this palette should be dark or light
+
+    'contrastDarkColors': ['50', '100', //hues which contrast should be 'dark' by default
+     '200', '300', '400', 'A100'],
+    'contrastLightColors': undefined    // could also specify this if default was 'dark'
+  });
+  $mdThemingProvider.theme('default').primaryPalette('customPalette');
 
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise('/jogs');

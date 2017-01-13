@@ -14,6 +14,12 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     return $scope.jogs;
   };
 
+  $scope.newJog = {
+    date: new Date(),
+    distance: 0,
+    time: 0
+  };
+
   JogFactory.getJogs().then(function(jogs) {
     $timeout(function() {
       $scope.jogs = jogs;
