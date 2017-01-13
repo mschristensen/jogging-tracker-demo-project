@@ -22,14 +22,14 @@ const exec = require('child_process').exec;
 let environment = args.env || process.env.NODE_ENV;
 
 gulp.task('html', function() {
-  gulp.src('./public/index.template.html')
+  return gulp.src('./public/index.template.html')
     .pipe(preprocess({ context: { ENV: environment, DEBUG: true }}))
     .pipe(rename('index.html'))
     .pipe(gulp.dest('./public'));
 });
 
-gulp.task('dependencies', function() {
-  gulp.src(['./node_modules/angular/angular.min.js',
+gulp.task('dependencies', function(done) {
+  return gulp.src(['./node_modules/angular/angular.min.js',
             './node_modules/angular-ui-router/release/angular-ui-router.min.js',
             './node_modules/angular-cache/dist/angular-cache.min.js',
             './node_modules/angular-mocks/angular-mocks.js'])
@@ -38,7 +38,7 @@ gulp.task('dependencies', function() {
 });
 
 gulp.task('lint', function() {
-  gulp.src(['./public/app/**/*.js', '!./public/app/**/*.spec.js', '*.js', './utils/**/*.js', './test/**/*.js', './config/**/*.js', './app/**/*.js'])
+  return gulp.src(['./public/app/**/*.js', '!./public/app/**/*.spec.js', '*.js', './utils/**/*.js', './test/**/*.js', './config/**/*.js', './app/**/*.js'])
     .pipe(jshint({
       node: true,
       // list of global variables and whether they are assignable
@@ -53,18 +53,25 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('scripts', function() {
-  gulp.src(['./public/app/**/*.js', '!./public/app/**/*.spec.js'])
-    .pipe(concat('bundle.min.js'))
-    .pipe(babel({
-        presets: ['es2015']
-    }))
-    .pipe(uglify())
-    .pipe(gulp.dest('./public'));
+gulp.task('scripts', function(done) {
+  if(environment === 'production') {
+    gulp.src(['./public/app/**/*.js', './public/app/config/angular.config.js', '!./public/app/**/*.spec.js'])
+      .pipe(concat('bundle.min.js'))
+      .pipe(babel({
+          presets: ['es2015']
+      }))
+      .pipe(uglify())
+      .pipe(gulp.dest('./public'))
+      .once('end', () => {
+        done();
+      });
+  } else {
+    done();
+  }
 });
 
 gulp.task('styles', function() {
-  gulp.src(['./public/app/core.less', './public/app/**/*.less'])
+  return gulp.src(['./public/app/core.less', './public/app/**/*.less'])
     .pipe(concat('app.css'))
     .pipe(less().on('error', function (err) {
       throw new gutil.PluginError({
@@ -82,8 +89,8 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('./public'));
 });
 
-gulp.task('angular-config', function () {
-  gulp.src('./angular.config.json')
+gulp.task('angular-config', function() {
+  return gulp.src('./angular.config.json')
     .pipe(gulpNgConfig('app', {
       environment: environment || 'development',
       createModule: false
@@ -91,12 +98,8 @@ gulp.task('angular-config', function () {
     .pipe(gulp.dest('./public/app/config'));
 });
 
-gulp.task('build', ['html', 'angular-config', 'dependencies', 'styles', 'lint'], function(done) {
-  if(environment === 'production') {
-    runSequence('scripts', done);
-  } else {
-    done();
-  }
+gulp.task('build', function(done) {
+  runSequence('html', 'angular-config', 'dependencies', 'styles', 'lint', 'scripts');
 });
 
 gulp.task('start', function(done) {
