@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module('app', ['ui.router', 'angular-cache', 'ngMaterial']);
+var app = angular.module('app', ['ui.router', 'angular-cache', 'ngMaterial', 'angularMoment']);
 
 app.constant('HTTP_RESPONSES', {
   NoResponse: -1,
@@ -36,28 +36,48 @@ app.constant('AUTH_EVENTS', {
 });
 
 // configure the router
-app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', '$compileProvider', '$mdDateLocaleProvider', '$mdThemingProvider', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES, $compileProvider, $mdDateLocaleProvider, $mdThemingProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', '$compileProvider', '$mdDateLocaleProvider', '$mdThemingProvider', 'moment', '$httpProvider', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES, $compileProvider, $mdDateLocaleProvider, $mdThemingProvider, moment, $httpProvider) {
+  
+  function convertDateStringsToDates(input) {
+    // Ignore things that aren't objects.
+    if (typeof input !== 'object') return input;
+
+    for(let key in input) {
+      // don't check properties further along the prototype chain
+      if(!input.hasOwnProperty(key)) continue;
+
+      let value = input[key];
+      let match;
+      // Check for string properties which look like dates
+      if(typeof value === 'string' && Object.prototype.toString.call(new Date(value)) === '[object Date]' && !isNaN(new Date(value).getTime())) {
+        // Successfully instantiated a *valid* Date object using string value
+        input[key] = new Date(value);
+      } else if(typeof value === 'object') {
+        // Recurse into object
+        convertDateStringsToDates(value);
+      }
+    }
+  }
+
+  // CONVERT DATE STRINGS ON RESPONSES TO ACTUAL DATES
+  $httpProvider.defaults.transformResponse.push(function(responseData) {
+    convertDateStringsToDates(responseData);
+    return responseData;
+  });
+
   // MATERIAL UI CONFIG
   // Prevent Angular 1.6 optimisations which break some Angular Material components
   $compileProvider.preAssignBindingsEnabled(true);
 
   // Default date format dd/mm/yyyy
   $mdDateLocaleProvider.formatDate = function(date) {
-    let day = date.getDate();
-    let monthIndex = date.getMonth();
-    let year = date.getFullYear();
-    return day + '/' + (monthIndex + 1) + '/' + year;
+    return date ? moment(date).format('DD/MM/YYYY') : '';
   };
 
   // Parse date of format dd/mm/yyyy
   $mdDateLocaleProvider.parseDate = function(dateString) {
-    let parts = dateString.split('/');
-    if(parts.length !== 3) return new Date(NaN);
-    try {
-      return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
-    } catch(err) {
-      return new Date(NaN);
-    }
+    var m = moment(dateString, 'DD/MM/YYYY', true);
+    return m.isValid() ? m.toDate() : new Date(NaN);
   };
 
   // Custom primary colour theme

@@ -48,18 +48,16 @@
           align-items: center;
           border-bottom: 1px solid @grey;
 
-          &.create-jog {
-            &.not-md {
-              input {
-                background-color: transparent;
-                border: none;
-                border-bottom: solid 2px @grey;
-                padding: 3px;
+          &.not-md {
+            input {
+              background-color: transparent;
+              border: none;
+              border-bottom: solid 2px @grey;
+              padding: 3px;
 
-                &:focus {
-                  outline: none;
-                  border-bottom: solid 2px @primary;
-                }
+              &:focus {
+                outline: none;
+                border-bottom: solid 2px @primary;
               }
             }
           }
@@ -83,6 +81,20 @@
         display: flex;
         align-items: center;
         border-bottom: 1px solid @grey;
+
+        &.not-md {
+          input {
+            background-color: transparent;
+            border: none;
+            border-bottom: solid 2px @grey;
+            padding: 3px;
+
+            &:focus {
+              outline: none;
+              border-bottom: solid 2px @primary;
+            }
+          }
+        }
 
         img {
           height: 15px;

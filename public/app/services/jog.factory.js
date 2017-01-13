@@ -20,6 +20,14 @@ app.factory('JogFactory', ['ApiFactory', function(ApiFactory) {
     });
   };
 
+  jogFactory.updateJog = function(jog) {
+    return new Promise(function(resolve, reject) {
+      ApiFactory.request('PUT', '/jog/' + jog._id, jog).then(function(response) {
+        return resolve(response.payload);
+      }, reject);
+    });
+  };
+
   jogFactory.deleteJog = function(id) {
     return new Promise(function(resolve, reject) {
       ApiFactory.request('DELETE', '/jog/' + id).then(function(response) {
