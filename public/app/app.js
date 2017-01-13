@@ -60,7 +60,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
     }
   };
 
-  // Custom theme
+  // Custom primary colour theme
   $mdThemingProvider.definePalette('customPalette', {
     '50': 'e4e7ea',
     '100': 'c0c6cd',
@@ -83,8 +83,24 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
      '200', '300', '400', 'A100'],
     'contrastLightColors': undefined    // could also specify this if default was 'dark'
   });
-  $mdThemingProvider.theme('default').primaryPalette('customPalette');
 
+  // Custom accent colour based on the MaterialUI 'green' theme
+  var customAccentMap = $mdThemingProvider.extendPalette('green', {
+    '500': '#2ecc71',
+    'contrastDefaultColor': 'light'
+  });
+
+  // Register the new color palette map with the name <code>neonRed</code>
+  $mdThemingProvider.definePalette('customAccent', customAccentMap);
+
+  // Use that theme for the primary intentions
+  $mdThemingProvider.theme('default')
+    .primaryPalette('customPalette')
+    .accentPalette('customAccent', {
+      'default': '500'
+    });
+
+  // ROUTING
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise('/jogs');
 

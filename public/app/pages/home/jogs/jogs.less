@@ -36,14 +36,12 @@
       text-transform: uppercase;
     }
     .table-cell {
+      display: flex;
+      align-items: center;
       border-bottom: 1px solid @grey;
 
-
-      &.create-jog {
-        display: flex;
-        align-items: center;
-
-        input.not-md {
+      &.create-jog.not-md {
+        input {
           background-color: transparent;
           border: none;
           border-bottom: solid 2px @grey;
