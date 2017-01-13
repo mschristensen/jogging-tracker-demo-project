@@ -1,3 +1,9 @@
 <div id="home-view" class="full-page">
-  HOME
+  <div id="side-menu" ng-class="{ 'closed': !isNavOpen() }"></div>
+  <div id="page-container">
+    <header>
+      <img ng-src="assets/icons/{{ isNavOpen() ? 'back' : 'menu' }}.png" ng-click="toggleNavOpen()">
+      <h1>My Jogs</h1>
+    </header>
+  </div>
 </div>
