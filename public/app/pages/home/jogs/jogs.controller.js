@@ -20,6 +20,12 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     time: 0
   };
 
+  $scope.computeAverageSpeed = function(jog) {
+    let speed = jog.distance / jog.time;
+    if(isNaN(speed)) return '...';
+    return speed.toFixed(2);
+  };
+
   JogFactory.getJogs().then(function(jogs) {
     $timeout(function() {
       $scope.jogs = jogs;

@@ -1,38 +1,42 @@
-<div id="control-panel" ng-cloak>
-  <md-content layout-padding>
-    <h2>From:</h2>
-    <md-datepicker ng-model="date.from" md-placeholder="From date" md-open-on-focus></md-datepicker>
-    <h2>To:</h2>
-    <md-datepicker ng-model="date.to" md-placeholder="To date" md-open-on-focus></md-datepicker>
-  </md-content>
-</div>
-<div id="content-panel">
-  <div class="table table--5cols">
-
-    <div class="table-cell"><h3>Date</h3></div>
-    <div class="table-cell"><h3>Distance</h3></div>
-    <div class="table-cell"><h3>Time</h3></div>
-    <div class="table-cell"><h3>Average Speed</h3></div>
-    <div class="table-cell"></div>
-
-    <div class="table-cell create-jog">
-      <md-datepicker md-hide-icons="all" ng-model="newJog.date" md-placeholder="Date" md-open-on-focus></md-datepicker>
+<div id="jogs-view">
+  <div id="control-panel" ng-cloak>
+    <div id="date-controls">
+      <md-content layout-padding>
+        <h2>From:</h2>
+        <md-datepicker ng-model="date.from" md-placeholder="From date" md-open-on-focus></md-datepicker>
+        <h2>To:</h2>
+        <md-datepicker ng-model="date.to" md-placeholder="To date" md-open-on-focus></md-datepicker>
+      </md-content>
     </div>
-    <div class="table-cell create-jog not-md">
-      <input name="distance" ng-model="newJog.distance" required>
+    <div id="create-jog-controls">
+      <div class="table table--5cols">
+        <div class="table-cell create-jog">
+          <md-datepicker md-hide-icons="all" ng-model="newJog.date" md-placeholder="Date" md-open-on-focus></md-datepicker>
+        </div>
+        <div class="table-cell create-jog not-md">
+          <input name="distance" ng-model="newJog.distance" required>
+        </div>
+        <div class="table-cell create-jog not-md">
+          <input name="time" ng-model="newJog.time" required>
+        </div>
+        <div class="table-cell create-jog not-md">{{ computeAverageSpeed(newJog) }}</div>
+        <div class="table-cell create-jog"><md-button class="md-raised md-accent">Create Jog</md-button></div>
+
+        <div class="table-cell"><h3>Date</h3></div>
+        <div class="table-cell"><h3>Distance</h3></div>
+        <div class="table-cell"><h3>Time</h3></div>
+        <div class="table-cell"><h3>Average Speed</h3></div>
+        <div class="table-cell"></div>
+      </div>
     </div>
-    <div class="table-cell create-jog not-md">
-      <input name="time" ng-model="newJog.time" required>
+  </div>
+  <div id="content-panel">
+    <div class="table table--5cols">
+      <div class="table-cell" ng-repeat-start="jog in getJogs()">{{ jog.date | date : 'dd/MM/yyyy' }}</div>
+      <div class="table-cell">{{ jog.distance }}</div>
+      <div class="table-cell">{{ jog.time }}</div>
+      <div class="table-cell">{{ computeAverageSpeed(jog) }}</div>
+      <div class="table-cell" ng-repeat-end></div>
     </div>
-    <div class="table-cell create-jog not-md">{{ newJog.distance / newJog.time }}</div>
-    <div class="table-cell"><md-button class="md-raised md-accent">Create Jog</md-button></div>
-
-    <div class="table-cell" ng-repeat-start="jog in getJogs()">{{ jog.date | date : 'dd/MM/yyyy' }}</div>
-    <div class="table-cell">{{ jog.distance }}</div>
-    <div class="table-cell">{{ jog.time }}</div>
-    <div class="table-cell">{{ jog.distance / jog.time }}</div>
-    <div class="table-cell" ng-repeat-end></div>
-
-
   </div>
 </div>

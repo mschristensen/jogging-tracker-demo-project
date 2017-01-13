@@ -1,57 +1,88 @@
-#control-panel {
+#jogs-view {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 80px;
+  flex-direction: column;
   width: 100%;
-
-  md-content {
-    background-color: transparent;
-
-    md-datepicker {
-      margin-right: 20px;
-    }
-
-    h2 {
-      display: inline-block;
-      font-size: 1em;
-      font-weight: 400;
-    }
-  }
-}
-
-#content-panel {
-  width: 100%;
-  height: calc(~'100% - 80px');
-  box-sizing: border-box;
-  padding: 0 20px;
+  height: 100%;
   background-color: #fff;
 
-  .table {
-    font-size: 0.8em;
+  #control-panel {
+    width: 100%;
 
-    h3 {
-      font-size: 1em;
-      font-weight: 500;
-      text-transform: uppercase;
-    }
-    .table-cell {
+    #date-controls {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid @grey;
+      width: 100%;
+      height: 80px;
+      background-color: @grey;
 
-      &.create-jog.not-md {
-        input {
-          background-color: transparent;
-          border: none;
-          border-bottom: solid 2px @grey;
-          padding: 3px;
+      md-content {
+        display: block;
+        background-color: transparent;
 
-          &:focus {
-            outline: none;
-            border-bottom: solid 2px @primary;
+        md-datepicker {
+          margin-right: 20px;
+        }
+
+        h2 {
+          display: inline-block;
+          font-size: 1em;
+          font-weight: 400;
+        }
+      }
+    }
+    #create-jog-controls {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 calc(20px + @scroll-bar-width) 0 20px;
+
+      .table {
+        font-size: 0.8em;
+
+        h3 {
+          font-size: 1em;
+          font-weight: 500;
+          text-transform: uppercase;
+        }
+        .table-cell {
+          display: flex;
+          align-items: center;
+          border-bottom: 1px solid @grey;
+
+          &.create-jog {
+            &.not-md {
+              input {
+                background-color: transparent;
+                border: none;
+                border-bottom: solid 2px @grey;
+                padding: 3px;
+
+                &:focus {
+                  outline: none;
+                  border-bottom: solid 2px @primary;
+                }
+              }
+            }
           }
         }
+      }
+    }
+  }
+
+  #content-panel {
+    flex-grow: 1;
+    overflow-y: scroll;
+    width: 100%;
+    height: calc(~'100% - 80px');
+    box-sizing: border-box;
+    padding: 0 20px;
+
+    .table {
+      font-size: 0.8em;
+
+      .table-cell {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid @grey;
       }
     }
   }
