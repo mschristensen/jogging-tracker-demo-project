@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module('app', ['ui.router', 'angular-cache']);
+var app = angular.module('app', ['ui.router', 'angular-cache', 'ngMaterial']);
 
 app.constant('HTTP_RESPONSES', {
   NoResponse: -1,
@@ -36,7 +36,27 @@ app.constant('AUTH_EVENTS', {
 });
 
 // configure the router
-app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', '$compileProvider', '$mdDateLocaleProvider', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES, $compileProvider, $mdDateLocaleProvider) {
+  // Prevent Angular 1.6 optimisations which break some Angular Material components
+  $compileProvider.preAssignBindingsEnabled(true);
+
+  $mdDateLocaleProvider.formatDate = function(date) {
+    let day = date.getDate();
+    let monthIndex = date.getMonth();
+    let year = date.getFullYear();
+    return day + '/' + (monthIndex + 1) + '/' + year;
+  };
+
+  $mdDateLocaleProvider.parseDate = function(dateString) {
+    let parts = dateString.split('/');
+    if(parts.length !== 3) return new Date(NaN);
+    try {
+      return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+    } catch(err) {
+      return new Date(NaN);
+    }
+  };
+
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise('/jogs');
 

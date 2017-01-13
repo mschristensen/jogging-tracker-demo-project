@@ -1,0 +1,27 @@
+#control-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 80px;
+  width: 100%;
+
+  md-content {
+    background-color: transparent;
+
+    md-datepicker {
+      margin-right: 20px;
+    }
+
+    h2 {
+      display: inline-block;
+      font-size: 1em;
+      font-weight: 400;
+    }
+  }
+}
+
+#content-panel {
+  width: 100%;
+  height: calc(~'100% - 80px');
+  background-color: #fff;
+}

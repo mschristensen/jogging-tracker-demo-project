@@ -32,7 +32,10 @@ gulp.task('dependencies', function(done) {
   return gulp.src(['./node_modules/angular/angular.min.js',
             './node_modules/angular-ui-router/release/angular-ui-router.min.js',
             './node_modules/angular-cache/dist/angular-cache.min.js',
-            './node_modules/angular-mocks/angular-mocks.js'])
+            './node_modules/angular-mocks/angular-mocks.js',
+            './node_modules/angular-material/angular-material.js',
+            './node_modules/angular-animate/angular-animate.js',
+            './node_modules/angular-aria/angular-aria.js'])
     .pipe(concat('dependencies.js'))
     .pipe(gulp.dest('./public'));
 });
@@ -71,7 +74,7 @@ gulp.task('scripts', function(done) {
 });
 
 gulp.task('styles', function() {
-  return gulp.src(['./public/app/core.less', './public/app/**/*.less'])
+  return gulp.src(['./public/app/core.less', './public/app/**/*.less', './node_modules/angular-material/angular-material.css'])
     .pipe(concat('app.css'))
     .pipe(less().on('error', function (err) {
       throw new gutil.PluginError({
