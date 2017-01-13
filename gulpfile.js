@@ -118,6 +118,14 @@ gulp.task('run-tests', function(done) {
     });
 });
 
+gulp.task('deploy', ['build'], function() {
+  exec(['git add -u && git commit -m "build commit" && git push heroku master'], function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    done(err);
+  });
+});
+
 gulp.task('test', function(done) {
   environment = 'development';
   return runSequence('build', ['start', 'run-tests']);
