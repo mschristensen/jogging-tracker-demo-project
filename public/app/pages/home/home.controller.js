@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular.module('app');
-app.controller('homeController', ['$scope', '$state', function($scope, $state) {
+app.controller('homeController', ['$scope', '$state', 'AuthFactory', 'USER_ROLES', function($scope, $state, AuthFactory, USER_ROLES) {
   $scope.navOpen = false;
 
   $scope.isNavOpen = function() {
@@ -27,5 +27,10 @@ app.controller('homeController', ['$scope', '$state', function($scope, $state) {
       default:
         return '';
     }
+  };
+
+  $scope.showMenuItem = function(stateName) {
+    let state = $state.get(stateName);
+    return AuthFactory.isAuthorized(state.data.authorizedRoles);
   };
 }]);

@@ -5,9 +5,9 @@
       <p>Mike Christensen</p>
     </header>
     <ul>
-      <a ui-sref="home.jogs"><li ng-class="{ 'selected': getState() === 'home.jogs' }">My Jogs</li></a>
-      <a ui-sref="home.reports"><li ng-class="{ 'selected': getState() === 'home.reports' }">Reports</li></a>
-      <a ui-sref="home.manage-users"><li ng-class="{ 'selected': getState() === 'home.manage-users' }">Manage Users</li></a>
+      <a ui-sref="home.jogs"><li ng-show="showMenuItem('home.jogs')" ng-class="{ 'selected': getState() === 'home.jogs' }">My Jogs</li></a>
+      <a ui-sref="home.reports"><li ng-show="showMenuItem('home.reports')" ng-class="{ 'selected': getState() === 'home.reports' }">Reports</li></a>
+      <a ui-sref="home.manage-users"><li ng-show="showMenuItem('home.manage-users')" ng-class="{ 'selected': getState() === 'home.manage-users' }">Manage Users</li></a>
     </ul>
   </nav>
   <div id="page-container">
