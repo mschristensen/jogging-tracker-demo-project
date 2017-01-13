@@ -74,6 +74,18 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
       data: {
         authorizedRoles: [USER_ROLES.User, USER_ROLES.UserManager, USER_ROLES.Admin]
       }
+    })
+    .state('home.reports', {
+      url: '/reports',
+      data: {
+        authorizedRoles: [USER_ROLES.User, USER_ROLES.UserManager, USER_ROLES.Admin]
+      }
+    })
+    .state('home.manage-users', {
+      url: '/manage-users',
+      data: {
+        authorizedRoles: [USER_ROLES.UserManager, USER_ROLES.Admin]
+      }
     });
 }]);
 

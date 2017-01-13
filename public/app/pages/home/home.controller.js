@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular.module('app');
-app.controller('homeController', ['$scope', function($scope) {
+app.controller('homeController', ['$scope', '$state', function($scope, $state) {
   $scope.navOpen = false;
 
   $scope.isNavOpen = function() {
@@ -10,5 +10,9 @@ app.controller('homeController', ['$scope', function($scope) {
 
   $scope.toggleNavOpen = function() {
     $scope.navOpen = !$scope.navOpen;
+  };
+
+  $scope.getState = function() {
+    return $state.current.name;
   };
 }]);
