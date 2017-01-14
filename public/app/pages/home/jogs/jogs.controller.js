@@ -21,7 +21,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
   };
 
   $scope.computeAverageSpeed = function(jog) {
-    let speed = jog.distance / jog.time;
+    let speed = jog.distance / (jog.time / 60);
     if(isNaN(speed)) return '?';
     return speed.toFixed(2);
   };
