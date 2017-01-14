@@ -104,7 +104,7 @@ gulp.task('angular-config', function() {
 });
 
 gulp.task('build', function(done) {
-  runSequence('html', 'angular-config', 'dependencies', 'styles', 'lint', 'scripts');
+  runSequence('html', 'angular-config', 'dependencies', 'styles', 'lint', 'scripts', done);
 });
 
 gulp.task('start', function(done) {
@@ -116,17 +116,14 @@ gulp.task('start', function(done) {
 });
 
 gulp.task('run-tests', function(done) {
-  gulp.src('test/test.js', { read: false })
+  return gulp.src('test/test.js', { read: false })
     // pause while server starts up
     .pipe(wait(3000))
     // gulp-mocha needs filepaths so you can't have any plugins before it
-    .pipe(mocha())
-    .once('end', () => {
-      done();
-    });
+    .pipe(mocha());
 });
 
-gulp.task('test', function(done) {
+gulp.task('test', ['build'], function(done) {
   environment = 'development';
-  return runSequence('build', ['start', 'run-tests']);
+  runSequence(['start', 'run-tests'], done);
 });
