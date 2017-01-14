@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular.module('app');
-app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$timeout', '$mdToast', function($scope, JogFactory, HTTP_RESPONSES, $timeout, $mdToast) {
+app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$timeout', '$mdToast', 'AuthFactory', function($scope, JogFactory, HTTP_RESPONSES, $timeout, $mdToast, AuthFactory) {
   let oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   $scope.date = {
@@ -49,7 +49,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
           }
           break;
         case HTTP_RESPONSES.Forbidden:
-          // TODO logout and redirect to login page
+          AuthFactory.logout();
           break;
         case HTTP_RESPONSES.InternalServerError:
           showToast('Something went wrong there. This is embarassing.');
@@ -70,7 +70,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     }, function(response) {
       switch(response.status) {
         case HTTP_RESPONSES.Forbidden:
-          // TODO logout and redirect to login page
+          AuthFactory.logout();
           break;
         case HTTP_RESPONSES.NotFound:
         case HTTP_RESPONSES.BadRequest:
@@ -100,7 +100,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
           }
           break;
         case HTTP_RESPONSES.Forbidden:
-          // TODO logout and redirect to login page
+          AuthFactory.logout();
           break;
         case HTTP_RESPONSES.InternalServerError:
           showToast('Something went wrong there. This is embarassing.');
@@ -126,7 +126,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
           });
           break;
         case HTTP_RESPONSES.Forbidden:
-          // TODO logout and redirect to login page
+          AuthFactory.logout();
           break;
         case HTTP_RESPONSES.BadRequest:
         case HTTP_RESPONSES.InternalServerError:
