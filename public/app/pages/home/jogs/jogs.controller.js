@@ -38,7 +38,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     JogFactory.createJog(jog).then(function() {
       showToast('Woohoo! Your jog was added.');
       // update jogs
-      getJogs();
+      $scope.fetchJogs();
     }, function(response) {
       switch(response.status) {
         case HTTP_RESPONSES.BadRequest:
@@ -66,7 +66,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     JogFactory.deleteJog(jog._id).then(function() {
       showToast('Woohoo! Your jog was deleted.');
       // update jogs
-      getJogs();
+      $scope.fetchJogs();
     }, function(response) {
       switch(response.status) {
         case HTTP_RESPONSES.Forbidden:
@@ -89,7 +89,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     JogFactory.updateJog(jog).then(function() {
       showToast('Woohoo! Your jog was updated.');
       // update jogs
-      getJogs();
+      $scope.fetchJogs();
     }, function(response) {
       switch(response.status) {
         case HTTP_RESPONSES.BadRequest:
@@ -113,8 +113,8 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     });
   };
 
-  function getJogs() {
-    JogFactory.getJogs().then(function(jogs) {
+  $scope.fetchJogs = function() {
+    JogFactory.getJogs($scope.date.from, $scope.date.to).then(function(jogs) {
       $timeout(function() {
         $scope.jogs = jogs || [];
       });
@@ -138,7 +138,7 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
           break;
       }
     });
-  }
+  };
 
   function showToast(msg) {
     $mdToast.show(
@@ -150,5 +150,5 @@ app.controller('jogsController', ['$scope', 'JogFactory', 'HTTP_RESPONSES', '$ti
     );
   }
 
-  getJogs();
+  $scope.fetchJogs();
 }]);

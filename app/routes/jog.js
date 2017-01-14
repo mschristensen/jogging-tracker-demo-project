@@ -38,6 +38,23 @@ module.exports = function(router) {
         }
       }
 
+      let fromDate, toDate;
+      try {
+        if(req.query.fromDate) fromDate = new Date(req.query.fromDate);
+      } catch(err) {
+        return Response.InvalidArguments(['fromDate']).send(res);
+      }
+      try {
+        if(req.query.toDate) toDate = new Date(req.query.toDate);
+      } catch(err) {
+        return Response.InvalidArguments(['toDate']).send(res);
+      }
+      if(fromDate || toDate) {
+        jogData.date = {};
+        if(fromDate) jogData.date.$gte = fromDate;
+        if(toDate) jogData.date.$lte = toDate;
+      }
+
       JogController.read(jogData).then(function(response) {
         return response.send(res);
       }, function(err) {

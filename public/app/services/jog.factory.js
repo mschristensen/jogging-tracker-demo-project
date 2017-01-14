@@ -4,9 +4,18 @@ var app = angular.module('app');
 app.factory('JogFactory', ['ApiFactory', function(ApiFactory) {
   let jogFactory = {};
 
-  jogFactory.getJogs = function() {
+  jogFactory.getJogs = function(fromDate, toDate) {
     return new Promise(function(resolve, reject) {
-      ApiFactory.request('GET', '/jog').then(function(response) {
+      let queryString = '';
+      let fromDateQuery, toDateQuery;
+      if(fromDate) fromDateQuery = 'fromDate=' + fromDate.toISOString();
+      if(toDate) toDateQuery = 'toDate=' + toDate.toISOString();
+      if(fromDateQuery && toDateQuery) {
+        queryString = '?' + fromDateQuery + '&' + toDateQuery;
+      } else {
+        queryString = '?' + (fromDateQuery || toDateQuery);
+      }
+      ApiFactory.request('GET', '/jog' + queryString).then(function(response) {
         return resolve(response.payload);
       }, reject);
     });
