@@ -37,7 +37,7 @@ app.constant('AUTH_EVENTS', {
 
 // configure the router
 app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', '$compileProvider', '$mdDateLocaleProvider', '$mdThemingProvider', 'moment', '$httpProvider', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES, $compileProvider, $mdDateLocaleProvider, $mdThemingProvider, moment, $httpProvider) {
-  
+
   function convertDateStringsToDates(input) {
     // Ignore things that aren't objects.
     if (typeof input !== 'object') return input;
@@ -192,6 +192,9 @@ app.run(['$rootScope', '$state', 'AuthFactory', 'AUTH_EVENTS', function($rootSco
   });
 
   $rootScope.$on(AUTH_EVENTS.notAuthenticated, function() {
+    $state.go('auth.login');
+  });
+  $rootScope.$on(AUTH_EVENTS.logoutSuccess, function() {
     $state.go('auth.login');
   });
 }]);

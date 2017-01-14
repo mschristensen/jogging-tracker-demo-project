@@ -2,7 +2,7 @@
 
 var app = angular.module('app');
 app.controller('homeController', ['$scope', '$state', 'AuthFactory', 'USER_ROLES', function($scope, $state, AuthFactory, USER_ROLES) {
-  $scope.navOpen = false;
+  $scope.navOpen = true;
 
   $scope.isNavOpen = function() {
     return $scope.navOpen;
@@ -32,5 +32,13 @@ app.controller('homeController', ['$scope', '$state', 'AuthFactory', 'USER_ROLES
   $scope.showMenuItem = function(stateName) {
     let state = $state.get(stateName);
     return AuthFactory.isAuthorized(state.data.authorizedRoles);
+  };
+
+  $scope.getUser = function() {
+    return AuthFactory.getUser();
+  };
+
+  $scope.logout = function() {
+    AuthFactory.logout();
   };
 }]);

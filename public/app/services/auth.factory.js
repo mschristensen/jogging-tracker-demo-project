@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular.module('app');
-app.factory('AuthFactory', ['$http', 'CacheFactory', 'ApiFactory', function($http, CacheFactory, ApiFactory) {
+app.factory('AuthFactory', ['$http', 'CacheFactory', 'ApiFactory', '$rootScope', 'AUTH_EVENTS', function($http, CacheFactory, ApiFactory, $rootScope, AUTH_EVENTS) {
   let authFactory = {};
 
   let authCache;
@@ -38,6 +38,11 @@ app.factory('AuthFactory', ['$http', 'CacheFactory', 'ApiFactory', function($htt
         return resolve();
       }, reject);
     });
+  };
+
+  authFactory.logout = function() {
+    authCache.remove('user');
+    $rootScope.$broadcast(AUTH_EVENTS.logoutSuccess);
   };
 
   authFactory.signup = function(credentials) {

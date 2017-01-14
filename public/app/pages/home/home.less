@@ -4,6 +4,7 @@
   overflow-x: hidden;
 
   nav {
+    position: relative;
     width: 300px;
     height: 100%;
     background-color: @primary;
@@ -39,8 +40,20 @@
       }
     }
 
+    p#logout {
+      line-height: 80px;
+      margin: 0;
+      color: @text-light;
+      font-size: 0.8em;
+      text-align: center;
+
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+
     ul {
-      margin-top: 20px;
       a {
         li {
           height: 60px;

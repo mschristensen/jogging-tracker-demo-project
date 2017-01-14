@@ -2,8 +2,9 @@
   <nav ng-class="{ 'closed': !isNavOpen() }">
     <header>
       <img src="assets/images/logo.png">
-      <p>Mike Christensen</p>
+      <p>{{ getUser().name.first }} {{ getUser().name.last }}</p>
     </header>
+    <p id="logout" ng-click="logout()">Logout</p>
     <ul>
       <a ui-sref="home.jogs"><li ng-show="showMenuItem('home.jogs')" ng-class="{ 'selected': getState() === 'home.jogs' }">My Jogs</li></a>
       <a ui-sref="home.reports"><li ng-show="showMenuItem('home.reports')" ng-class="{ 'selected': getState() === 'home.reports' }">Reports</li></a>
