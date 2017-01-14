@@ -1,0 +1,28 @@
+<div id="reports-view">
+  <div id="control-panel">
+    <div id="date-controls">
+      <md-content layout-padding>
+        <h2>From:</h2>
+        <md-datepicker ng-model="date.from" md-placeholder="From date" md-open-on-focus ng-blur="fetchJogs()"></md-datepicker>
+        <h2>To:</h2>
+        <md-datepicker ng-model="date.to" md-placeholder="To date" md-open-on-focus ng-blur="fetchJogs()"></md-datepicker>
+      </md-content>
+    </div>
+  </div>
+  <div id="content-panel">
+    <div id="charts">
+      <canvas class="chart chart-line"
+              chart-data="charts.distance.data"
+              chart-labels="charts.distance.labels"
+              chart-series="charts.distance.series"
+              chart-options="charts.distance.options">
+      </canvas>
+      <canvas class="chart chart-line"
+              chart-data="charts.speed.data"
+              chart-labels="charts.speed.labels"
+              chart-series="charts.speed.series"
+              chart-options="charts.speed.options">
+      </canvas>
+    </div>
+  </div>
+</div>

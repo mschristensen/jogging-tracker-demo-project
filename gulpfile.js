@@ -37,7 +37,9 @@ gulp.task('dependencies', function(done) {
             './node_modules/angular-animate/angular-animate.js',
             './node_modules/angular-aria/angular-aria.js',
             './node_modules/moment/min/moment.min.js',
-            './node_modules/angular-moment/angular-moment.min.js'])
+            './node_modules/angular-moment/angular-moment.min.js',
+            './node_modules/chart.js/dist/Chart.min.js',
+            './node_modules/angular-chart.js/dist/angular-chart.min.js'])
     .pipe(concat('dependencies.js'))
     .pipe(gulp.dest('./public'));
 });

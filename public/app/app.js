@@ -1,6 +1,6 @@
 "use strict";
 
-var app = angular.module('app', ['ui.router', 'angular-cache', 'ngMaterial', 'angularMoment']);
+var app = angular.module('app', ['ui.router', 'angular-cache', 'ngMaterial', 'angularMoment', 'chart.js']);
 
 app.constant('HTTP_RESPONSES', {
   NoResponse: -1,
@@ -36,7 +36,7 @@ app.constant('AUTH_EVENTS', {
 });
 
 // configure the router
-app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', '$compileProvider', '$mdDateLocaleProvider', '$mdThemingProvider', 'moment', '$httpProvider', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES, $compileProvider, $mdDateLocaleProvider, $mdThemingProvider, moment, $httpProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_ROLES', '$compileProvider', '$mdDateLocaleProvider', '$mdThemingProvider', 'moment', '$httpProvider', 'ChartJsProvider', function($stateProvider, $urlRouterProvider, $locationProvider, USER_ROLES, $compileProvider, $mdDateLocaleProvider, $mdThemingProvider, moment, $httpProvider, ChartJsProvider) {
 
   function convertDateStringsToDates(input) {
     // Ignore things that aren't objects.
@@ -86,6 +86,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
     // Convert JSON strings to actual objects
     convertJSONStringsToObjects(responseData);
     return responseData;
+  });
+
+  // ANGULAR CHART JS CONFIGURATION
+  ChartJsProvider.setOptions({
+    chartColors: ['#34495e', '#707f8e']
   });
 
   // MATERIAL UI CONFIG
@@ -186,6 +191,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
     })
     .state('home.reports', {
       url: '/reports',
+      templateUrl: '/app/pages/home/reports/reports.view.html',
+      controller: 'reportsController',
       data: {
         authorizedRoles: [USER_ROLES.User, USER_ROLES.UserManager, USER_ROLES.Admin]
       }
