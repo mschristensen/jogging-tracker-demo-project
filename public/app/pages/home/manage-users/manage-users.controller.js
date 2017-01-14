@@ -1,10 +1,20 @@
 'use strict';
 
 var app = angular.module('app');
-app.controller('manageUsersController', ['$scope', 'UserFactory', 'HTTP_RESPONSES', '$timeout', '$mdToast', 'AuthFactory', function($scope, UserFactory, HTTP_RESPONSES, $timeout, $mdToast, AuthFactory) {
+app.controller('manageUsersController', ['$scope', 'UserFactory', 'HTTP_RESPONSES', '$timeout', '$mdToast', 'AuthFactory', 'USER_ROLES', function($scope, UserFactory, HTTP_RESPONSES, $timeout, $mdToast, AuthFactory, USER_ROLES) {
   $scope.users = [];
   $scope.getUsers = function() {
     return $scope.users;
+  };
+
+  $scope.USER_ROLES = USER_ROLES;
+  $scope.getRoleName = function(value) {
+    for(let key in USER_ROLES) {
+      if(USER_ROLES.hasOwnProperty(key)) {
+        if(USER_ROLES[key] === value) return key;
+      }
+    }
+    return '';
   };
 
   $scope.editingId = '';
@@ -39,6 +49,7 @@ app.controller('manageUsersController', ['$scope', 'UserFactory', 'HTTP_RESPONSE
   };
 
   $scope.updateUser = function(user) {
+    console.log(user.role, typeof user.role);
     UserFactory.updateUser(user).then(function() {
       showToast('Woohoo! The user was updated.');
       // update users

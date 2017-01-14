@@ -58,6 +58,7 @@ module.exports = function(router) {
     }, function(req, res, next) {
       let userData = {};
       if(req.body.email) userData.email = req.body.email;
+      if(req.body.role) userData.role = req.body.role;
       try {
         if(req.body.name) userData.name = JSON.parse(req.body.name);
       } catch(err) {
@@ -96,6 +97,7 @@ module.exports = function(router) {
 
       let userData = {};
       if(req.body.email) userData.email = req.body.email;
+      if(req.body.role) userData.role = req.body.role;
       try {
         if(req.body.name) userData.name = JSON.parse(req.body.name);
       } catch(err) {

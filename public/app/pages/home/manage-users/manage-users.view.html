@@ -23,8 +23,12 @@
         <span ng-click="editEntry(user._id, 'email')" ng-hide="editingId === user._id + 'email'">{{ user.email }}</span>
       </div>
       <div class="table-cell not-md">
-        <input type="number" name="role" ng-model="user.role" ng-show="editingId === user._id + 'role'" ng-blur="updateUser(user)" required>
-        <span ng-click="editEntry(user._id, 'role')" ng-hide="editingId === user._id + 'role'">{{ user.role }}</span>
+        <md-select ng-model="user.role" ng-show="editingId === user._id + 'role'" md-on-close="updateUser(user)" aria-label="Role" required>
+          <md-option ng-repeat="(key, value) in USER_ROLES" ng-value="value">
+            {{ key }}
+          </md-option>
+        </md-select>
+        <span ng-click="editEntry(user._id, 'role')" ng-hide="editingId === user._id + 'role'">{{ getRoleName(user.role) }}</span>
       </div>
       <div class="table-cell" ng-repeat-end><img src="assets/icons/remove.png" ng-click="deleteUser(user)"></div>
     </div>
