@@ -40,7 +40,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
 
   function convertDateStringsToDates(input) {
     // Ignore things that aren't objects.
-    if (typeof input !== 'object') return input;
+    if(typeof input !== 'object') return input;
 
     for(let key in input) {
       // don't check properties further along the prototype chain
@@ -59,9 +59,32 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
     }
   }
 
-  // CONVERT DATE STRINGS ON RESPONSES TO ACTUAL DATES
+  function convertJSONStringsToObjects(input) {
+    // Ignore things that aren't objects
+    if(typeof input !== 'object') return input;
+
+    for(let key in input) {
+      // don't check properties further along the prototype chain
+      if(!input.hasOwnProperty(key)) continue;
+
+      let value = input[key];
+      if(typeof value === 'string') {
+        try {
+          value = JSON.parse(value);
+        } catch(err) { /* do nothing */ }
+      } else if(typeof value === 'object') {
+        // Recurse into object
+        convertJSONStringsToObjects(value);
+      }
+    }
+  }
+
+  // Intercept HTTP responses from API to transform JSON response to be application friendly
   $httpProvider.defaults.transformResponse.push(function(responseData) {
+    // Convert date strings to actual date objects
     convertDateStringsToDates(responseData);
+    // Convert JSON strings to actual objects
+    convertJSONStringsToObjects(responseData);
     return responseData;
   });
 
@@ -169,6 +192,8 @@ app.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', 'USER_R
     })
     .state('home.manage-users', {
       url: '/manage-users',
+      templateUrl: '/app/pages/home/manage-users/manage-users.view.html',
+      controller: 'manageUsersController',
       data: {
         authorizedRoles: [USER_ROLES.UserManager, USER_ROLES.Admin]
       }

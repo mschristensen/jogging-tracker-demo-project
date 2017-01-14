@@ -1,0 +1,32 @@
+<div id="manage-users-view">
+  <div id="control-panel">
+    <div class="table table--5cols">
+      <div class="table-cell"><h3>FIRST NAME</h3></div>
+      <div class="table-cell"><h3>LAST NAME</h3></div>
+      <div class="table-cell"><h3>EMAIL</h3></div>
+      <div class="table-cell"><h3>ROLE</h3></div>
+      <div class="table-cell"></div>
+    </div>
+  </div>
+  <div id="content-panel">
+    <div class="table table--5cols">
+      <div class="table-cell not-md" ng-repeat-start="user in getUsers()">
+        <input name="name.first" ng-model="user.name.first" ng-show="editingId === user._id + 'name.first'" ng-blur="updateUser(user)" required>
+        <span ng-click="editEntry(user._id, 'name.first')" ng-hide="editingId === user._id + 'name.first'">{{ user.name.first }}</span>
+      </div>
+      <div class="table-cell not-md">
+        <input name="name.last" ng-model="user.name.last" ng-show="editingId === user._id + 'name.last'" ng-blur="updateUser(user)" required>
+        <span ng-click="editEntry(user._id, 'name.last')" ng-hide="editingId === user._id + 'name.last'">{{ user.name.last }}</span>
+      </div>
+      <div class="table-cell not-md">
+        <input name="email" ng-model="user.email" ng-show="editingId === user._id + 'email'" ng-blur="updateUser(user)" required>
+        <span ng-click="editEntry(user._id, 'email')" ng-hide="editingId === user._id + 'email'">{{ user.email }}</span>
+      </div>
+      <div class="table-cell not-md">
+        <input type="number" name="role" ng-model="user.role" ng-show="editingId === user._id + 'role'" ng-blur="updateUser(user)" required>
+        <span ng-click="editEntry(user._id, 'role')" ng-hide="editingId === user._id + 'role'">{{ user.role }}</span>
+      </div>
+      <div class="table-cell" ng-repeat-end><img src="assets/icons/remove.png" ng-click="deleteUser(user)"></div>
+    </div>
+  </div>
+</div>
