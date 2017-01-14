@@ -1,10 +1,13 @@
 'use strict';
 
 var app = angular.module('app');
-app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment', function($scope, $timeout, JogFactory, moment) {
-  let fromDate = new Date();
-  fromDate.setDate(fromDate.getDate() - 7);
-  let toDate = new Date();
+app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment', 'HTTP_RESPONSES', function($scope, $timeout, JogFactory, moment, HTTP_RESPONSES) {
+  let oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  $scope.date = {
+    from: oneWeekAgo,
+    to: new Date()
+  };
 
   let chartOptions = {
     scales: {
@@ -31,10 +34,9 @@ app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment
     }
   };
 
-  let dateSeries = createDateSeries(fromDate, toDate);
   $scope.charts = {
     distance: {
-      labels: dateSeries,
+      labels: [],
       data: [],
       series: ['Distance'],
       options: (function() {
@@ -47,7 +49,7 @@ app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment
       })()
     },
     speed: {
-      labels: dateSeries,
+      labels: [],
       data: [],
       series: ['Average Speed'],
       options: (function() {
@@ -64,15 +66,15 @@ app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment
   // Create an array of dates (step 1 day) between the specified dates (inclusive)
   function createDateSeries(from, to) {
     if(!(from instanceof Date) || !(to instanceof Date)) return [];
-    from = moment(from);
-    to = moment(to);
+    from = moment(from).startOf('day');
+    to = moment(to).startOf('day');
 
     let current = moment(from);
     if(to.diff(current, 'days') < 0) return [];
 
     let series = [];
     while(to.diff(current, 'days') >= 0) {
-      series.push(current.toDate());
+      series.push(current.startOf('day').toDate());
       current.add(1, 'days');
     }
     return series;
@@ -83,17 +85,18 @@ app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment
     // dataSeries contains one data array for each key
     let dataSeries = [];
 
-    from = moment(from);
-    to = moment(to);
-    let length = to.diff(from, 'days');
-    if(length < 0) return [];
+    from = moment(from).startOf('day');
+    to = moment(to).startOf('day');
 
-    // initialise data points as null
+    let current = moment(from);
+    if(to.diff(current, 'days') < 0) return [];
+
     let nullArray = [];
-    while(length + 1 > 0) {
+    while(to.diff(current, 'days') >= 0) {
       nullArray.push(null);
-      length--;
+      current.add(1, 'days');
     }
+
     for(let i = 0; i < keys.length; i++) {
       dataSeries.push(nullArray.slice()); // slice required to create clone of array
     }
@@ -101,26 +104,55 @@ app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment
     // for each data point, fill in the corresponding spot in the array for each data series
     for(let i = 0; i < jogs.length; i++) {
       for(let key in keys) {
-        dataSeries[key][moment(jogs[i].date).diff(from, 'days') + 1] = jogs[i][keys[key]];
+        dataSeries[key][moment(jogs[i].date).startOf('day').diff(from, 'days')] = jogs[i][keys[key]];
       }
     }
 
     return dataSeries;
   }
 
-  JogFactory.getJogs(fromDate, toDate).then(function(jogs) {
-    $timeout(function() {
-      let dataSeries = extractJogData(fromDate, toDate, jogs, ['distance', 'time']);
-      $scope.charts.distance.data = [dataSeries[0]];
-      let averageSpeedData = [];
-      for(let i = 0; i < dataSeries[1].length; i++) {
-        let averageSpeed = dataSeries[0][i] / (dataSeries[1][i] / 60);
-        averageSpeedData.push(averageSpeed.toFixed(2));
-      }
-      $scope.charts.speed.data = [averageSpeedData];
-    });
-  }, function() {
-    console.log("err");
-  });
+  $scope.fetchJogs = function() {
+    let fromDate = moment($scope.date.from).startOf('day').toDate();
+    let toDate = moment($scope.date.to).endOf('day').toDate();
+    JogFactory.getJogs(fromDate, toDate).then(function(jogs) {
+      $timeout(function() {
+        // set X-axis data for specified dates
+        let dateSeries = createDateSeries($scope.date.from, $scope.date.to);
+        $scope.charts.distance.labels = dateSeries;
+        $scope.charts.speed.labels = dateSeries;
 
+        // set Y-axis data from the fetched jogs
+        let dataSeries = extractJogData($scope.date.from, $scope.date.to, jogs, ['distance', 'time']);
+        $scope.charts.distance.data = [dataSeries[0]];
+        let averageSpeedData = [];
+        for(let i = 0; i < dataSeries[1].length; i++) {
+          let averageSpeed = dataSeries[0][i] / (dataSeries[1][i] / 60);
+          averageSpeedData.push(averageSpeed.toFixed(2));
+        }
+        $scope.charts.speed.data = [averageSpeedData];
+      });
+    }, function(response) {
+      switch(response.status) {
+        case HTTP_RESPONSES.NotFound:
+          $timeout(function() {
+            $scope.charts.distance.data = [];
+            $scope.charts.speed.data = [];
+          });
+          break;
+        case HTTP_RESPONSES.Forbidden:
+          AuthFactory.logout();
+          break;
+        case HTTP_RESPONSES.BadRequest:
+        case HTTP_RESPONSES.InternalServerError:
+          showToast('Something went wrong there. This is embarassing.');
+          console.error('Response:', response);
+          break;
+        default:
+          console.error('Unknown status code in response:', response);
+          break;
+      }
+    });
+  };
+
+  $scope.fetchJogs();
 }]);
