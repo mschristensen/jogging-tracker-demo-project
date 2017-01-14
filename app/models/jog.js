@@ -13,7 +13,8 @@ const jogSchema = new Schema({
   date: {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
+    index: true
   },
   distance: {
     type: Number,
