@@ -49,7 +49,6 @@ app.controller('manageUsersController', ['$scope', 'UserFactory', 'HTTP_RESPONSE
   };
 
   $scope.updateUser = function(user) {
-    console.log(user.role, typeof user.role);
     UserFactory.updateUser(user).then(function() {
       showToast('Woohoo! The user was updated.');
       // update users
