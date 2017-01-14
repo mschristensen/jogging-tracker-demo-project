@@ -525,4 +525,110 @@ module.exports = function() {
       });
   });
 
+  it('should successfully create jog as Admin for 2 days ago', (done) => {
+    let twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+    api.post('/jog')
+      .set('Content-Type', 'application/x-www-form-urlencoded')
+      .set('Authorization', adminToken)
+      .send({
+        date: twoDaysAgo,
+        distance: 2,
+        time: 2
+      })
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload[0]).to.include.keys('_id');
+        expect(res.body.payload[0]).to.include.keys('user_id');
+        expect(res.body.payload[0]).to.include.keys('date');
+        expect(res.body.payload[0]).to.include.keys('distance');
+        expect(res.body.payload[0]).to.include.keys('time');
+        done();
+      });
+  });
+
+  it('should successfully read own jogs with fromDate = three days ago', (done) => {
+    let threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    api.get('/jog')
+      .query({ fromDate: threeDaysAgo.toISOString() })
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.have.length(2);
+        done();
+      });
+  });
+
+  it('should successfully read own jogs with fromDate = one day ago', (done) => {
+    let oneDayAgo = new Date();
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+    api.get('/jog')
+      .query({ fromDate: oneDayAgo.toISOString() })
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.have.length(1);
+        done();
+      });
+  });
+
+  it('should successfully read own jogs with toDate = today', (done) => {
+    let today = new Date();
+    api.get('/jog')
+      .query({ toDate: today.toISOString() })
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.have.length(2);
+        done();
+      });
+  });
+
+  it('should successfully read own jogs with toDate = one day ago', (done) => {
+    let oneDayAgo = new Date();
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+    api.get('/jog')
+      .query({ toDate: oneDayAgo.toISOString() })
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.have.length(1);
+        done();
+      });
+  });
+
+  it('should successfully read own jogs with toDate = three days ago', (done) => {
+    let threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    api.get('/jog')
+      .query({ toDate: threeDaysAgo.toISOString() })
+      .set('Authorization', adminToken)
+      .expect(404)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.be.empty;
+        done();
+      });
+  });
+
+  it('should successfully read own jogs with fromDate = three days ago, toDate = today', (done) => {
+    let threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    let today = new Date();
+    api.get('/jog')
+      .query({ fromDate: threeDaysAgo.toISOString(), toDate: today.toISOString() })
+      .set('Authorization', adminToken)
+      .expect(200)
+      .end((err, res) => {
+        if(err) throw err;
+        expect(res.body.payload).to.have.length(2);
+        done();
+      });
+  });
 };
