@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular.module('app');
-app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment', 'HTTP_RESPONSES', function($scope, $timeout, JogFactory, moment, HTTP_RESPONSES) {
+app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment', 'HTTP_RESPONSES', '$mdToast', 'AuthFactory', function($scope, $timeout, JogFactory, moment, HTTP_RESPONSES, $mdToast, AuthFactory) {
   let oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   $scope.date = {
@@ -153,6 +153,16 @@ app.controller('reportsController', ['$scope', '$timeout', 'JogFactory', 'moment
       }
     });
   };
+
+  function showToast(msg) {
+    $mdToast.show(
+      $mdToast.simple()
+        .textContent(msg)
+        .position('top right')
+        .action('ok')
+        .hideDelay(5000)
+    );
+  }
 
   $scope.fetchJogs();
 }]);
