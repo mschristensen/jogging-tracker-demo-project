@@ -9,6 +9,8 @@ Users can have one of 3 different user roles with different permissions:
   - UserManager:    CRUD on all users
   - Admin:          CRUD on all records and users
 
+Some example jog data exists for these users between the dates: 08/01/2016 to 20/01/2016.
+
 Demo accounts with the following credentials exist for each role type:
 - User: `user@test.com`, `password`
 - UserManager: `usermanager@test.com`, `password`
